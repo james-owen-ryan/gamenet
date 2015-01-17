@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <!-- Load Google font -->
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:100' rel='stylesheet' type='text/css'>
+    <!-- Load favicon and other icons -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'apple-touch-icon.png') }}" />
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static', filename = 'apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename = 'apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename = 'apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ url_for('static', filename = 'apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename = 'apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename = 'apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename = 'apple-touch-icon-152x152.png') }}" />
+    <!-- Load jQuery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <style>
+      body {
+        font-family: 'Josefin Sans', sans-serif;
+        font-size: 48px;
+      }
+      input[type='text'] {
+        font-family: 'Josefin Sans', sans-serif;
+        font-size: 24px;
+      }
+      .prompt {
+        width: 75%;
+      }
+      .ui-autocomplete {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        float: center;
+        display: none;
+        min-width: 160px;
+        /*max-width: 400px;*/
+        padding: 6px 0;
+        margin: 0 0 10px 25px;
+        list-style: none;
+        background-color: #FF5500;
+        border-color: #ccc;
+        border-color: white;
+        border-style: solid;
+        border-width: 0px;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        -webkit-background-clip: padding-box;
+        -moz-background-clip: padding;
+        background-clip: padding-box;
+        *border-right-width: 0px;
+        *border-bottom-width: 0px;
+        text-align: center;
+      }
+      .ui-state-hover, .ui-autocomplete li:hover {
+        color:black;
+      }
+      .ui-menu .ui-menu-item {
+        background:#FF5500;
+        height:30px;
+        font-size:24px;
+        color:white;
+      }
+      .ui-helper-hidden-accessible {
+        display:none;
+      }
+    </style>
+  </head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <center>
+  <br>
+  <!-- Display Gamenet logo -->
+  <img src="{{ url_for('static', filename = 'gamenet_logo.png') }}" alt="" id="gamenetLogo" style="height:100px">
+  <br><br>
+  <!-- Display prompt text -->
+  <div class=prompt id="prompt">
+    Gamenet is a hypertext network in which related videogames are linked.<br><br>Which game do you want to start at?
+  </div>
+  <br>
+  <script type ="application/javascript" src="{{ url_for('static', filename = 'gamesDataForAutocomplete.json') }}" charset="utf-8"></script>
+    <!-- Requires jQuery -->
+    <div class="searcher"><center>
+      <b>
+        <input id="tags" type="text" placeholder="" name="code", 
+        style="width: 600px; height: 40px; border: 0; background: #EEEEEE; text-align: center">
+        <script>
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            $(document).ready(function() {
+                $(function() {
+                    $("#tags").autocomplete({
+                        maxResults: 5,
+                        source: function(request, response) {
+                            var results = $.ui.autocomplete.filter(games_list, request.term);
+                            response(results.slice(0, this.options.maxResults));
+                        },
+                        focus: function(event, ui) {
+                            // prevent autocomplete from updating the textbox
+                            event.preventDefault();
+                            // manually update the textbox
+                            $(this).val(ui.item.label);
+                        },
+                        select: function(event, ui) {
+                            // prevent autocomplete from updating the textbox
+                            event.preventDefault();
+                            // manually update the textbox and hidden field
+                            var selectedGameID = ui.item.id;
+                            // generate a page for the selected game
+                            window.location = '/games/' + selectedGameID
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+        $("input.submit").click(function(e){
+            $.post( "/save", {name: $("input.name").val(), time: "2pm"});
+        });
+        </script>
+    </b>
+    </div>
+  </center>
+</html>

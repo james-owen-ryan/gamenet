@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <!-- Load Google font -->
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:100&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <!-- Load favicon and other icons -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'apple-touch-icon.png') }}" />
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static', filename = 'apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename = 'apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename = 'apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ url_for('static', filename = 'apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename = 'apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename = 'apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename = 'apple-touch-icon-152x152.png') }}" />
+	<style>
+	a:link {
+	  color: white;
+    text-decoration: none;
+	}
+	a:visited {
+	  color: white;
+    text-decoration: none;
+	}
+	a:hover {
+	  color: black;
+    text-decoration: none;
+	}
+  a:active {
+    color: white;
+    text-decoration: none;
+  }
+	body {
+	  font-family: 'Josefin Sans', sans-serif; 
+	  font-size: 48px;
+	}
+  .goBack {
+    font-size: 20px;
+  }
+	.gameTitle {
+	  font-size: 64pt;
+    width: 80%;
+	}
+	.gameYear {
+	  font-size: 32pt;
+	}
+	.linksToOtherSources {
+	  font-size: 20pt;
+	}
+	.summary {
+	  font-size: 20pt;
+	  width: 90%;
+	}
+	.relatedAndUnrelatedGamesHeader {
+	  font-size: 48px;
+	}
+	.relatedAndUnrelatedGamesSummary {
+	  font-size: 20pt;
+	  width: 60%
+	}
+  .relatedAndUnrelatedGamesEntry {
+    width:75%;
+    line-height: 120%;
+  }
+  .relatedAndUnrelatedGamesLink {
+    font-size: 32px;
+    width:100%;
+  }
+	</style>
+  </head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <center>
+  <!-- Display Gamenet logo as a link back to the home page -->
+  <div class=goBack>
+    <a href='/'>
+      <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="30" vspace="7">
+    </a>
+    <br><br>
+  </div>
+  <!-- Title and year of release -->
+  <div class=gameTitle>
+    {{ game.multiline_title |safe }}
+  </div>
+  <div class=gameYear>{{ game.year }}</div>
+  <hr noshade color="black"; size="1"; width="30%">
+  <!-- Wikipedia, Google, and YouTube links -->
+  <div class=linksToOtherSources>
+  <a href={{ game.wiki_url }} target="_blank">
+    <img border="0" alt="Wikipedia page" src={{ url_for('static', filename = 'wikipedia_logo_bw.png') }} height="47" vspace="7">
+  </a>
+  &nbsp;
+  <a href={{ game.google_query }} target="_blank">
+    <img border="0" alt="Google query" src={{ url_for('static', filename = 'google_logo_bw.png') }} height="50" vspace="7">
+  </a>
+  &nbsp;
+  <span style="font-size: 18pt">&nbsp;</span>  <!-- Necessary to get the spacing perfect -->
+  <a href={{ game.youtube_query }} target="_blank">
+    <img border="0" alt="YouTube query" src={{ url_for('static', filename = 'youtube_logo_bw.png') }} height="50" vspace="7">
+  </a>
+  <br><br>
+  </div>
+  <!-- Game summary, extracted from Wikipedia -->
+  <div class=summary>
+  	{{ game.wiki_summary }}
+  </div>
+  <br>
+  <!-- Related games -->
+  <div class=relatedAndUnrelatedGamesHeader>
+  	Related Games
+  </div>
+  <div class=relatedAndUnrelatedGamesSummary>
+  	These are the 50 most related games to {{ game.title }}. Click to navigate to a new game, unless you want to <a href="/" style="color: #FF5500">start over</a>. Color indicates how related a linked game is:
+  	<br><br>
+  	<span style="color:white; background-color:#E64C00">&nbsp;extremely </span>
+  	<span style="color:white; background-color:#FF9100">&nbsp;fairly </span>
+  	<span style="color:white; background-color:#FFC100">&nbsp;slightly&nbsp;</span>
+  </div>
+  <br>
+  {% for entry in game.related_games %}
+      <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
+        <div class=relatedAndUnrelatedGamesLink>
+          <a href="/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+        </div>
+      </div>
+  {% endfor %}
+  <br>
+  <!-- Unrelated games -->
+  <div class=relatedAndUnrelatedGamesHeader>
+	Disparate Games
+  </div>
+  <div class=relatedAndUnrelatedGamesSummary>
+  	These are the 50 most <i>un</i>related games to {{ game.title }}. Click to navigate to a new game, unless you want to <a href="/" style="color: #FF5500">start over</a>. Color indicates how unrelated a linked game is:
+  	<br><br>
+  	<span style="color:white; background-color:#004CE6">&nbsp;extremely </span>
+  	<span style="color:white; background-color:#33B9F9">&nbsp;fairly </span>
+  	<span style="color:white; background-color:#33E9F9">&nbsp;slightly&nbsp;</span>
+  </div>
+  <br>
+  {% for entry in game.unrelated_games %}
+    <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
+      <div class=relatedAndUnrelatedGamesLink>
+        <a href="/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+      </div>
+    </div>
+  {% endfor %}
+  </center>
+</html>
