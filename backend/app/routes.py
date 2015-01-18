@@ -28,7 +28,7 @@ def load_database():
             )
             database.append(game_object)
     # Now that all the games have been read in, allow each game's un/related-games entries to be
-    # attributed game titles and years via lookup into the database that is not fully populated
+    # attributed game titles and years via lookup into the database that is now fully populated
     for game in database:
         for entry in game.related_games:
             title = database[int(entry.game_id)].title
