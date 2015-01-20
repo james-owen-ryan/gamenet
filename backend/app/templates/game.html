@@ -119,7 +119,7 @@
   {% for entry in game.related_games %}
       <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
         <div class=relatedAndUnrelatedGamesLink>
-          <a href="/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+          <a href="/gamenet/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
         </div>
       </div>
   {% endfor %}
@@ -139,7 +139,7 @@
   {% for entry in game.unrelated_games %}
     <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
       <div class=relatedAndUnrelatedGamesLink>
-        <a href="/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+        <a href="/gamenet/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
       </div>
     </div>
   {% endfor %}
