@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <title>Gamenet :: {{ game.title }}</title>
+    <title>GameNet :: {{ game.title }}</title>
     <!-- Load Google font -->
-    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:100&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:300&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <!-- Load favicon and other icons -->
     <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'apple-touch-icon.png') }}" />
@@ -31,34 +31,44 @@
       color: white;
       text-decoration: none;
     }
-	body {
-	  font-family: 'Josefin Sans', sans-serif; 
-	  font-size: 48px;
-	}
+    body {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 300;
+      font-size: 48px;
+    }
     .goBack {
       font-size: 20px;
     }
-	.gameTitle {
-	  font-size: 64pt;
+    .gameTitle {
+      font-size: 64pt;
+      font-weight: 300;
       width: 80%;
-	}
+    }
 	.gameYear {
 	  font-size: 32pt;
+      padding-top: 8px;
 	}
 	.linksToOtherSources {
 	  font-size: 20pt;
 	}
 	.summary {
 	  font-size: 20pt;
-	  width: 90%;
+      font-weight: 300;
+	  width: 80%;
 	}
 	.relatedAndUnrelatedGamesHeader {
 	  font-size: 48px;
+      padding-bottom: 10px;
 	}
 	.relatedAndUnrelatedGamesSummary {
 	  font-size: 20pt;
-	  width: 60%
+	  width: 60%;
 	}
+    .relatedAndUnrelatedGamesColorKey {
+      font-size: 20pt;
+      width: 60%;
+      padding-top: 10px;
+    }
     .relatedAndUnrelatedGamesEntry {
       width:75%;
       line-height: 120%;
@@ -74,16 +84,16 @@
   <!-- Display Gamenet logo as a link back to the home page -->
   <div class=goBack>
     <a href='/gamenet'>
-      <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="30" vspace="7">
+      <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="30">
     </a>
-    <br><br>
   </div>
   <!-- Title and year of release -->
+  <hr noshade="" color="black" ;="" size="1" width="78%">
   <div class=gameTitle>
     {{ game.multiline_title |safe }}
   </div>
   <div class=gameYear>{{ game.year }}</div>
-  <hr noshade color="black"; size="1"; width="30%">
+  <hr noshade="" color="black" ;="" size="1" width="78%">
   <!-- Wikipedia, Google, and YouTube links -->
   <div class=linksToOtherSources>
   <a href={{ game.wiki_url }} target="_blank">
@@ -111,7 +121,8 @@
   </div>
   <div class=relatedAndUnrelatedGamesSummary>
   	These are the 50 most related games to {{ game.title }}. Click to navigate to a new game, unless you want to <a href="/gamenet" style="color: #FF5500">start over</a>. Color indicates how related a linked game is:
-  	<br><br>
+  </div>
+  <div class="relatedAndUnrelatedGamesColorKey">
   	<span style="color:white; background-color:#E64C00">&nbsp;extremely </span>
   	<span style="color:white; background-color:#FF9100">&nbsp;fairly </span>
   	<span style="color:white; background-color:#FFC100">&nbsp;slightly&nbsp;</span>
@@ -131,7 +142,8 @@
   </div>
   <div class=relatedAndUnrelatedGamesSummary>
   	These are the 50 most <i>un</i>related games to {{ game.title }}. Click to navigate to a new game, unless you want to <a href="/gamenet" style="color: #FF5500">start over</a>. Color indicates how unrelated a linked game is:
-  	<br><br>
+  </div>
+  <div class="relatedAndUnrelatedGamesColorKey">
   	<span style="color:white; background-color:#004CE6">&nbsp;extremely </span>
   	<span style="color:white; background-color:#33B9F9">&nbsp;fairly </span>
   	<span style="color:white; background-color:#33E9F9">&nbsp;slightly&nbsp;</span>
