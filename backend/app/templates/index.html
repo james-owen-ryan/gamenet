@@ -77,8 +77,10 @@
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <center>
   <br>
-  <!-- Display Gamenet logo -->
-  <img src="{{ url_for('static', filename = 'gamenet_logo.png') }}" alt="" id="gamenetLogo" style="height:100px">
+  <!-- Display Gamenet logo [as link back to this page, to emphasize this affordance] -->
+  <a href='/gamenet'>
+    <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="100px">
+  </a>
   <br><br>
   <!-- Display prompt text -->
   <div class=prompt id="prompt">
