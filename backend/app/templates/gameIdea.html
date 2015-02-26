@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>[game idea] | GameNet</title>
+    <!-- Load Google font -->
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:300&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+    <!-- Load favicon and other icons -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'favicon.ico') }}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'apple-touch-icon.png') }}" />
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static', filename = 'apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename = 'apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename = 'apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ url_for('static', filename = 'apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename = 'apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename = 'apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename = 'apple-touch-icon-152x152.png') }}" />
+	<style>
+	a:link {
+	  color: white;
+    text-decoration: none;
+	}
+	a:visited {
+	  color: white;
+    text-decoration: none;
+	}
+	a:hover {
+	  color: black;
+    text-decoration: none;
+	}
+    a:active {
+      color: white;
+      text-decoration: none;
+    }
+    body {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 300;
+      font-size: 48px;
+    }
+    .goBack {
+      font-size: 20px;
+    }
+    .gameTitle {
+      font-size: 64pt;
+      font-weight: 300;
+      width: 80%;
+    }
+	.gameYear {
+	  font-size: 32pt;
+      padding-top: 8px;
+	}
+	.linksToOtherSources {
+	  font-size: 20pt;
+	}
+	.summary {
+	  font-size: 20pt;
+      font-weight: 300;
+	  width: 80%;
+      line-height: 117%;
+	}
+	.relatedAndUnrelatedGamesHeader {
+	  font-size: 48px;
+      padding-bottom: 10px;
+	}
+	.relatedAndUnrelatedGamesSummary {
+	  font-size: 20pt;
+	  width: 60%;
+        line-height: 117%;
+	}
+    .relatedAndUnrelatedGamesColorKey {
+      font-size: 20pt;
+      width: 60%;
+      padding-top: 10px;
+    }
+    .relatedAndUnrelatedGamesEntry {
+      width:75%;
+      line-height: 130%;
+    }
+    .relatedAndUnrelatedGamesLink {
+      font-size: 32px;
+      width:100%;
+    }
+	</style>
+  </head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <center>
+  <!-- Display Gamenet logo as a link back to the home page -->
+  <div class=goBack>
+    <a href='/gamenet'>
+      <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="30">
+    </a>
+  </div>
+  <!-- Title and year of release -->
+  <hr noshade="" color="black" ;="" size="1" width="78%">
+  <div class=gameTitle>
+    [a game idea]
+  </div>
+  <!-- Game-dea text, which was given to the GameSage -->
+  <div class=summary>
+  	{{ game_idea.idea_text }}
+  </div>
+  <br>
+  <!-- Related games -->
+  <div class=relatedAndUnrelatedGamesHeader>
+  	Related Games
+  </div>
+  <div class=relatedAndUnrelatedGamesSummary>
+  	These are the 50 most related games to your idea. Click to navigate to a one, unless you want to <a href="/gamenet" style="color: #FF5500">start over</a>. Color indicates how related a linked game is:
+  </div>
+  <div class="relatedAndUnrelatedGamesColorKey">
+  	<span style="color:white; background-color:#E64C00">&nbsp;extremely </span>
+  	<span style="color:white; background-color:#FF9100">&nbsp;fairly </span>
+  	<span style="color:white; background-color:#FFC100">&nbsp;slightly&nbsp;</span>
+  </div>
+  <br>
+  {% for entry in game.related_games %}
+      <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
+        <div class=relatedAndUnrelatedGamesLink>
+          <a href="/gamenet/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+        </div>
+      </div>
+  {% endfor %}
+  <br>
+  <!-- Unrelated games -->
+  <div class=relatedAndUnrelatedGamesHeader>
+	Disparate Games
+  </div>
+  <div class=relatedAndUnrelatedGamesSummary>
+  	These are the 50 most <i>un</i>related games to your idea. Click to navigate to one, unless you want to <a href="/gamenet" style="color: #FF5500">start over</a>. Color indicates how unrelated a linked game is:
+  </div>
+  <div class="relatedAndUnrelatedGamesColorKey">
+  	<span style="color:white; background-color:#004CE6">&nbsp;extremely </span>
+  	<span style="color:white; background-color:#33B9F9">&nbsp;fairly </span>
+  	<span style="color:white; background-color:#33E9F9">&nbsp;slightly&nbsp;</span>
+  </div>
+  <br>
+  {% for entry in game.unrelated_games %}
+    <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
+      <div class=relatedAndUnrelatedGamesLink>
+        <a href="/gamenet/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+      </div>
+    </div>
+  {% endfor %}
+  </center>
+</html>

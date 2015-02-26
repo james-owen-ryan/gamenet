@@ -1,5 +1,5 @@
 class Game(object):
-    """A game representation for Gamenet's purposes."""
+    """A game representation for GameNet's purposes."""
 
     def __init__(self, game_id, title, year, platform, wiki_url, wiki_summary,
                  related_games_str, unrelated_games_str):
@@ -61,6 +61,26 @@ class Game(object):
         if platform:
             query += "+{}".format('+'.join(platform.split()))
         return query
+
+
+class GameIdea(object):
+    """A representation of a GameIdea received as a GameSage query."""
+
+    def __init__(self, gamesage_query):
+        """Initialize a GameIdea object."""
+        self.idea_text, related_games_str, unrelated_games_str = gamesage_query.split('+')
+        self.related_games = self.parse_related_games_str(related_games_str)
+        self.unrelated_games = self.parse_related_games_str(unrelated_games_str)
+
+    @staticmethod
+    def parse_related_games_str(related_games_str):
+        """Parse a formatted string representation of a game idea's un/related games."""
+        game_entries = []
+        entry_strings = related_games_str.split(',')
+        for entry in entry_strings:
+            game_id, score = entry.split('&')
+            game_entries.append(RelatedGamesEntry(game_id=game_id, score=score))
+        return game_entries
 
 
 class RelatedGamesEntry(object):

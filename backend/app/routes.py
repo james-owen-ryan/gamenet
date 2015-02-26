@@ -1,5 +1,5 @@
 import csv
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from game import Game
 
 
@@ -7,13 +7,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    """Render the Gamenet homepage."""
+    """Render the GameNet homepage."""
     return render_template('index.html')
 
 @app.route('/games/<selected_game_id>')
 def open_page_for_selected_game(selected_game_id):
-    """Render the Gamenet entry for a user-selected game."""
+    """Render the GameNet entry for a user-selected game."""
     selected_game = app.database[int(selected_game_id)]
+    return render_template('game.html', game=selected_game)
+
+@app.route('/gamesageQuery=<gamesage_query>')
+def generate_entry_for_gamesage_query(selected_game_id):
+    """Generate and render a GameNet entry for a GameSage query."""
+
     return render_template('game.html', game=selected_game)
 
 def load_database():
