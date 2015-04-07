@@ -40,11 +40,7 @@ def generate_entry_for_game_idea_from_gamesage():
         idea_text=idea_text, related_games_str=related_games_str, unrelated_games_str=unrelated_games_str
     )
     # Set the title and year of each entry in the game idea's un/related games listings
-    for entry in game_idea.related_games:
-        title = app.database[int(entry.game_id)].title
-        year = app.database[int(entry.game_id)].year
-        entry.set_game_title_and_year(title=title, year=year)
-    for entry in game_idea.unrelated_games:
+    for entry in game_idea.related_games+game_idea.unrelated_games:
         title = app.database[int(entry.game_id)].title
         year = app.database[int(entry.game_id)].year
         entry.set_game_title_and_year(title=title, year=year)
@@ -65,11 +61,7 @@ def load_database():
     # Now that all the games have been read in, allow each game's un/related-games entries to be
     # attributed game titles and years via lookup into the database that is now fully populated
     for game in database:
-        for entry in game.related_games:
-            title = database[int(entry.game_id)].title
-            year = database[int(entry.game_id)].year
-            entry.set_game_title_and_year(title=title, year=year)
-        for entry in game.unrelated_games:
+        for entry in game.related_games+game.unrelated_games:
             title = database[int(entry.game_id)].title
             year = database[int(entry.game_id)].year
             entry.set_game_title_and_year(title=title, year=year)
