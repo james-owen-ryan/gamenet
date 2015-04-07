@@ -66,9 +66,11 @@ class Game(object):
 class GameIdea(object):
     """A representation of a GameIdea received as a GameSage query."""
 
-    def __init__(self, gamesage_query):
+    def __init__(self, idea_text, related_games_str, unrelated_games_str):
         """Initialize a GameIdea object."""
-        self.idea_text, related_games_str, unrelated_games_str = gamesage_query.split('+')
+        self.idea_text = idea_text
+        related_games_str = related_games_str
+        unrelated_games_str = unrelated_games_str
         self.related_games = self.parse_related_games_str(related_games_str)
         self.unrelated_games = self.parse_related_games_str(unrelated_games_str)
 

@@ -1,6 +1,6 @@
 import csv
-from flask import Flask, render_template, jsonify
-from game import Game
+from flask import Flask, render_template, request
+from game import Game, GameIdea
 
 
 app = Flask(__name__)
@@ -30,11 +30,16 @@ def open_page_given_game_id(selected_game_id):
     return render_template('game.html', game=selected_game)
 
 
-@app.route('/gamesageQuery=<gamesage_query>')
-def generate_entry_for_gamesage_query(selected_game_id):
+@app.route('/game_idea', methods=['POST'])
+def generate_entry_for_game_idea_from_gamesage():
     """Generate and render a GameNet entry for a GameSage query."""
-
-    return render_template('game.html', game=selected_game)
+    idea_text = request.form['user_submitted_text']
+    related_games_str = request.form['most_related_games_str']
+    unrelated_games_str = request.form['least_related_games_str']
+    game_idea = GameIdea(
+        idea_text=idea_text, related_games_str=related_games_str, unrelated_games_str=unrelated_games_str
+    )
+    return render_template('gameIdea.html', game_idea=game_idea)
 
 
 def load_database():
