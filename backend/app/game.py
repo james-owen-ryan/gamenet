@@ -73,7 +73,6 @@ class GameIdea(object):
         unrelated_games_str = unrelated_games_str
         self.related_games = self.parse_related_games_str(related_games_str)
         self.unrelated_games = self.parse_related_games_str(unrelated_games_str)
-        self.unrelated_games.reverse()  # Reverse list so that it starts with most unrelated first
 
     @staticmethod
     def parse_related_games_str(related_games_str):
