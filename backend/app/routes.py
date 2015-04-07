@@ -5,22 +5,37 @@ from game import Game
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     """Render the GameNet homepage."""
-    return render_template('index.html')
+    return render_template('index.html', entered_unknown_game=False)
+
+
+@app.route('/findByTitle=<selected_game_title>')
+def open_page_given_game_title(selected_game_title):
+    if any(g for g in app.database.games if g.title.lower() == selected_game_title.lower()):
+        selected_game = next(g for g in app.database.games if g.title.lower() == selected_game_title.lower())
+        return render_template('game.html', game=selected_game)
+    else:
+        # The game title/arbitrary query that the user typed in does not match
+        # any game in our database, so keep displaying the home page, but note this
+        return render_template('index.html', entered_unknown_game=True)
+
 
 @app.route('/games/<selected_game_id>')
-def open_page_for_selected_game(selected_game_id):
+def open_page_given_game_id(selected_game_id):
     """Render the GameNet entry for a user-selected game."""
     selected_game = app.database[int(selected_game_id)]
     return render_template('game.html', game=selected_game)
+
 
 @app.route('/gamesageQuery=<gamesage_query>')
 def generate_entry_for_gamesage_query(selected_game_id):
     """Generate and render a GameNet entry for a GameSage query."""
 
     return render_template('game.html', game=selected_game)
+
 
 def load_database():
     """Load the database of game representations from a TSV file."""

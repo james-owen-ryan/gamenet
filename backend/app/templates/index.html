@@ -83,7 +83,11 @@
   <br><br>
   <!-- Display prompt text -->
   <div class=prompt id="prompt">
-    GameNet is a hypertext network in which related videogames are linked.<br><br>Which game do you want to start at?
+    {% if entered_unknown_game %}
+      I'm sorry, but that game is not included in GameNet.<br><br>Please enter a new game.
+    {% else %}
+      GameNet is a hypertext network in which related videogames are linked.<br><br>Which game do you want to start at?
+    {% endif %}
   </div>
   <br>
   <script type ="application/javascript" src="{{ url_for('static', filename = 'gamesDataForAutocomplete.json') }}" charset="utf-8"></script>
