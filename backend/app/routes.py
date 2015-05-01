@@ -14,8 +14,8 @@ def home():
 
 @app.route('/findByTitle=<selected_game_title>')
 def open_page_given_game_title(selected_game_title):
-    if any(g for g in app.database.games if g.title.lower() == selected_game_title.lower()):
-        selected_game = next(g for g in app.database.games if g.title.lower() == selected_game_title.lower())
+    if any(g for g in app.database if g.title.lower() == selected_game_title.lower()):
+        selected_game = next(g for g in app.database if g.title.lower() == selected_game_title.lower())
         return render_template('game.html', game=selected_game)
     else:
         # The game title/arbitrary query that the user typed in does not match
