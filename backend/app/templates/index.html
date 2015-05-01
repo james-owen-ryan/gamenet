@@ -19,9 +19,26 @@
         font-family: 'Josefin Sans', sans-serif;
         font-size: 48px;
       }
+      .footer {
+        font-family: 'Josefin Sans', sans-serif;
+        font-size: 24px;
+      }
       a:link {
+        color: black;
         text-decoration: none;
-	  }
+      }
+      a:visited {
+        color: black;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #FF5500;
+        text-decoration: none;
+      }
+      a:active {
+        color: black;
+        text-decoration: none;
+      }
       input[type='text'] {
         font-family: 'Josefin Sans', sans-serif;
         font-size: 24px;
@@ -84,12 +101,11 @@
   <!-- Display prompt text -->
   <div class=prompt id="prompt">
     {% if entered_unknown_game %}
-      I'm sorry, but that game is not included in GameNet.<br><br>Please enter a new game.
+      I'm sorry, but that game is not included in GameNet.<br><br>Please enter a new title.<br><br><br>
     {% else %}
-      GameNet is a hypertext network in which related videogames are linked.<br><br>Which game do you want to start at?
+      GameNet is a hypertext network in which related videogames are linked.<br><br>Which game do you want to start at?<br><br>
     {% endif %}
   </div>
-  <br>
   <script type ="application/javascript" src="{{ url_for('static', filename = 'gamesDataForAutocomplete.json') }}" charset="utf-8"></script>
     <!-- Requires jQuery -->
     <div class="searcher"><center>
@@ -136,6 +152,15 @@
         });
         </script>
     </b>
+    </div>
+    <br>
+    <br>
+    <div class="footer">
+        <a href="/gamenet/about">About</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="mailto:jor@soe.ucsc.edu" target="_top">Contact</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="/gamenet/faq">FAQ</a>
     </div>
   </center>
 </html>

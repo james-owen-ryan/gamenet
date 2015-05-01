@@ -12,6 +12,12 @@ def home():
     return render_template('index.html', entered_unknown_game=False)
 
 
+@app.route('/about')
+def about():
+    """Render the about page."""
+    return render_template('about.html')
+
+
 @app.route('/findByTitle=<selected_game_title>')
 def open_page_given_game_title(selected_game_title):
     if any(g for g in app.database if g.title.lower() == selected_game_title.lower()):
