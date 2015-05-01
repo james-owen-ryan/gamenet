@@ -62,13 +62,20 @@
     font-size: 36pt;
     font-weight: 300;
     }
-  .text {
-    width:50%;
+  .faq {
+    width:60%;
     font-family: 'Josefin Sans', sans-serif;
     font-size: 20pt;
     font-weight: 300;
     line-height: 117%;
   }
+  .question {
+     font-size: 20pt;
+     font-weight: bold;
+   }
+  .answer {
+     font-size: 20pt;
+   }
   </style>
   </head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
@@ -80,11 +87,65 @@
     </a>
   </div>
   <!-- About text -->
-  <div class=text>
+  <div class=faq>
+    <br><hr noshade="" color="black" ;="" size="1" width="78%"><br>
+    <div class="question">Who made this?</div>
+    <br>
+    <div class="answer">UC Santa Cruz PhD students
+        <a href="http://users.soe.ucsc.edu/~jor/" target="_blank">James Ryan</a> and
+      <a href="http://erickaltman.com/" target="_blank">Eric Kaltman</a>. We made it as part of the larger
+        <a href="http://gamecip.soe.ucsc.edu/" target="_blank">
+      Game Metadata and Citation Project</a> (GAMECIP).
+    </div>
     <br><br>
-    We are currently writing up a FAQ. Coming soon.
+    <div class="question">How does it work?</div>
+    <br>
+    <div class="answer">We built GameNet by submitting Wikipedia articles about games to
+        a technique from natural language processing called latent semantic analysis (LSA).
+        LSA works from the premises that words that occur in similar contexts will tend to have
+        similar meanings and that texts that are composed of similar words will tend to be
+        topically similar. By the technique, words get attributed computable representations that
+        are determined by the contexts in which they appear (in our case, the Wikipedia articles) and
+        the contexts themselves (those Wikipedia articles) likewise get attributed computable representations
+        according to which words appear in them. The cool thing about LSA is that it may be able to
+        infer that two words that
+        do not appear together in any context (perhaps dialectal variants that denote the same thing,
+        like 'gas' and 'petrol') are in fact highly semantically related. By the same token, it may infer
+        the semantic relatedness of two contexts that have no terms in common. This ability to learn
+        global associations from local co-occurrences is the achievement of LSA and what led to it becoming
+        one of the major natural language processing techniques of the last twenty years. For this project, we extracted 11,829
+        Wikipedia articles that describe individual games and submitted these to LSA. By taking the computable
+        representation that LSA gave to the games' Wikipedia articles and using them as a way of representing the
+        games themselves, we can automatically determine how related any game is to any other game among the
+        11,829 included in our model. This is how GameNet is able to reason about game relatedness.
+    </div>
+    <br><br>
+    <div class="question">Can you say more about LSA and your model?</div>
+    <br>
+    <div class="answer">
+        From a corpus of text, a co-occurrence matrix of its words and documents (the
+        individual texts that make up the corpus) is built; this matrix specifies
+        which words occurred in which documents (and thereby which documents words occurred in). The columns and
+        rows in this matrix can be thought of as vectors that represent the meanings, in an approximate sense,
+        of the words and documents that they correspond to; this is called a vector space model of semantics.
+        LSA is an example of such a model, but its hallmark is that it reduces the dimensionality of these vectors
+        by a matrix-factorization algorithm called singular value decomposition. Remarkably,
+        doing this allows the model to, as we've said above, infer semantic associations that are not encoded in the full
+        co-occurrence matrix. Having an LSA model, one can easily calculate how semantically related any of its
+        documents are by taking the cosine between their LSA vectors. In corpora in which each document pertains
+        to a specific individual concept, such as a corpus comprising encyclopedia entries, these relatedness scores
+        can reasonably be utilized as a measure of the relatedness of the concepts themselves. Crucially, we
+        relied on this notion in training our LSA model on the corpus comprising Wikipedia articles for
+        11,829 videogames, which we mentioned above. By this model,
+        we can quantify how related any two of these games are by taking the cosine between their LSA vectors.
+        If this isn't detailed enough, check out
+        <a href="https://users.soe.ucsc.edu/~jor/publications/ryanGamesStudiesUsingNLP.pdf" target="_blank">
+            this conference paper</a> in which we explain our implementation in greater depth.
+        Feel free to <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">shoot us an email</a> too.
+    </div>
+    <br><hr noshade="" color="black" ;="" size="1" width="78%"><br>
   </div>
-  <br><br><br><br><br><br><br><br>
+  <br><br><br><br>
   <div class="footer">
     <a href="/gamenet/about">About</a>
     &nbsp;&nbsp;&nbsp;
