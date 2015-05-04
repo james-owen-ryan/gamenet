@@ -40,12 +40,12 @@
         color: black;
         text-decoration: none;
       }
+      .prompt {
+        width: 75%;
+      }
       input[type='text'] {
         font-family: 'Josefin Sans', sans-serif;
         font-size: 24px;
-      }
-      .prompt {
-        width: 75%;
       }
       .ui-autocomplete {
         position: absolute;
@@ -104,7 +104,7 @@
     {% if entered_unknown_game %}
       I'm sorry, but that game is not included<br>in GameNet.<br><br>Please enter a new title.<br><br>
     {% else %}
-      GameNet is a hypertext network in which related videogames are linked.<br><br>Which game do you want to start at?<br><br>
+      GameNet is a tool for videogame discovery in which related games are linked.<br><br>Which game do you want to start at?<br><br>
     {% endif %}
   </div>
   <script type ="application/javascript" src="{{ url_for('static', filename = 'gamesDataForAutocomplete.json') }}" charset="utf-8"></script>
