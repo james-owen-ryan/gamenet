@@ -16,7 +16,7 @@ class GameNetGame(object):
         self.related_games = self.parse_related_games_str(related_games_str)
         self.unrelated_games = self.parse_related_games_str(unrelated_games_str)
         self.multiline_title = self.generate_multiline_title(self.title)
-        self.google_query = self.generate_google_query(self.title, platform)
+        self.google_images_query = self.generate_google_images_query(self.title, platform)
         self.youtube_query = self.generate_youtube_query(self.title, platform)
 
     @staticmethod
@@ -44,14 +44,27 @@ class GameNetGame(object):
             return title
 
     @staticmethod
-    def generate_google_query(title, platform):
-        """Generate a Google query for a search related to this game."""
-        query = "https://www.google.com/?gws_rd=ssl#q="
-        query += '+'.join(title.split())
+    def generate_google_images_query(title, platform):
+        """Generate a Google Images query for a search related to this game."""
+        # Build up the query, which will be composed partly of weird
+        # Google URL foo
+        prefix = "https://www.google.com/search?site=&tbm=isch&source=hp&biw=1438&bih=722&q="
+        infix = "&oq="
+        suffix = (
+            "&gs_l=img.3..0i24.2683.14223.0.14537.23.20.0.3.3.0.217.2149.10j9j1.20.0.msedr"
+            "...0...1ac.1.64.img..0.23.2149.Uj4VDYLpDFU"
+        )
+        query = '+'.join(title.split())
         if platform:
+            # I've informally observed that better results come from using 'nes'
+            # rather than Famicom (or variants thereof), even in the case of
+            # a Famicom exclusive like Mother
+            if platform in ('family computer', 'famicom', 'family computer disk system'):
+                platform = "nes"
             query += "+{}".format('+'.join(platform.split()))
-        query += "+video+game"
-        return query
+        query += '+gameplay'
+        full_query = prefix + query + infix + query + suffix
+        return full_query
 
     @staticmethod
     def generate_youtube_query(title, platform):
