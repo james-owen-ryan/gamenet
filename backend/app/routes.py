@@ -40,7 +40,7 @@ def render_gamenet_entry_given_game_title(selected_game_title):
 @app.route('/gamenet/games/<selected_game_id>')
 def render_gamenet_entry_given_game_id(selected_game_id):
     """Render the GameNet entry for a user-selected game."""
-    selected_game = app.database[int(selected_game_id)]
+    selected_game = app.gamenet_database[int(selected_game_id)]
     return render_template('game.html', game=selected_game)
 
 
@@ -55,8 +55,8 @@ def generate_gamenet_entry_for_game_idea_from_gamesage():
     )
     # Set the title and year of each entry in the game idea's un/related games listings
     for entry in game_idea.related_games+game_idea.unrelated_games:
-        title = app.database[int(entry.game_id)].title
-        year = app.database[int(entry.game_id)].year
+        title = app.gamenet_database[int(entry.game_id)].title
+        year = app.gamenet_database[int(entry.game_id)].year
         entry.set_game_title_and_year(title=title, year=year)
     return render_template('gameIdea.html', game_idea=game_idea)
 
