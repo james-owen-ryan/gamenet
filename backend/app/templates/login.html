@@ -1,0 +1,12 @@
+<html>
+<head>
+    <title>GameNet and GameSage Login</title>
+</head>
+<body>
+    <form method="POST" action="/login">
+        {{ form.csrf_token }}
+        {{ form.user_name.label }} {{ form.user_name(size=64) }}
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>

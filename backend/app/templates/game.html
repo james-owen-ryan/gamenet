@@ -14,6 +14,8 @@
     <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-120x120.png') }}" />
     <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-144x144.png') }}" />
     <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-152x152.png') }}" />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="/static/icon_click.js" type="application/javascript"></script>
 	<style>
 	a:link {
 	  color: white;
@@ -112,10 +114,13 @@
     <a href='/gamesage'>
       <img border="0" alt="GameSage" src={{ url_for('static', filename = 'the_gamesage.png') }} height="30">
     </a>
+      {% if current_user.is_authenticated() %}
+        <div id="user" data-id="{{ current_user.id }}">Logged in as: {{ current_user.user_name }}</div>
+      {% endif %}
   </div>
   <!-- Title and year of release -->
   <hr noshade="" color="black" ;="" size="1" width="78%">
-  <div class=gameTitle>
+  <div class='gameTitle' data-game="{{ game.id }}">
     {{ game.multiline_title |safe }}
   </div>
   <div class=gameYear>{{ game.year }}</div>

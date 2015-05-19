@@ -79,7 +79,7 @@
   <div class="gameSageImage"><img onclick="getUserSubmittedText()" src="{{ url_for('static', filename = 'the_gamesage.png') }}" alt="" id="gameSageImage" style="height:350px"><br></div>
   <br>
   <div class=prompt id="textBox">
-      I will ask you a series of questions about your game idea. Please write in complete sentences and be as specific
+      {% if current_user.is_authenticated() %}Hello {{ current_user.user_name }}, {% endif %} I will ask you a series of questions about your game idea. Please write in complete sentences and be as specific
       as you can.<br><br>Click me when you are ready to begin.
   </div>
   <br><br>
