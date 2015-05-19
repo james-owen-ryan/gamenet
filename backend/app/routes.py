@@ -33,7 +33,7 @@ def render_gamenet_entry_given_game_title(selected_game_title):
         return render_template('game.html', game=selected_game)
     else:
         # The game title/arbitrary query that the user typed in does not match
-        # any game in our database, so keep displaying the home page, but note this
+        # any game in our database, so keep displaying the home page, but express this
         return render_template('gamenet_index.html', entered_unknown_game=True)
 
 

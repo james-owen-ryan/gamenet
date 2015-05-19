@@ -10,9 +10,9 @@ class GameNetGame(object):
         self.platform = platform.decode('utf-8')
         self.wiki_url = wiki_url
         self.wiki_summary = wiki_summary.decode('utf-8')
-        # Replace newline characters with whitespace -- otherwise they get
+        # Replace newline characters with linebreaks -- otherwise they get
         # rendered as empty strings
-        self.wiki_summary = self.wiki_summary.replace('\n', ' ')
+        self.wiki_summary = self.wiki_summary.replace('\n', '<br>')
         self.related_games = self.parse_related_games_str(related_games_str)
         self.unrelated_games = self.parse_related_games_str(unrelated_games_str)
         self.multiline_title = self.generate_multiline_title(self.title)
