@@ -8,7 +8,7 @@ from game import GameNetGame, GameSageGame, GameIdea
 app = Flask(__name__)
 
 
-@app.route('/gamenet')
+@app.route('/gamenet/')
 def gamenet_home():
     """Render the GameNet homepage."""
     return render_template('gamenet_index.html', entered_unknown_game=False)
