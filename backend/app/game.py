@@ -54,7 +54,7 @@ class GameNetGame(object):
             "&gs_l=img.3..0i24.2683.14223.0.14537.23.20.0.3.3.0.217.2149.10j9j1.20.0.msedr"
             "...0...1ac.1.64.img..0.23.2149.Uj4VDYLpDFU"
         )
-        # Remove ampersands from the title, as these screw up the Google query
+        # Remove ampersands from the title, as these are special characters in a query
         title = title.replace('&', ' ')
         query = '+'.join(title.split())
         if platform:
@@ -71,6 +71,8 @@ class GameNetGame(object):
     @staticmethod
     def generate_youtube_query(title, platform):
         """Generate a YouTube query for a Let's Play video for this game."""
+        # Remove ampersands from the title, as these are special characters in a query
+        title = title.replace('&', ' ')
         query = "https://www.youtube.com/results?search_query=let's+play+"
         query += '+'.join(title.split())
         if platform:
