@@ -54,6 +54,8 @@ class GameNetGame(object):
             "&gs_l=img.3..0i24.2683.14223.0.14537.23.20.0.3.3.0.217.2149.10j9j1.20.0.msedr"
             "...0...1ac.1.64.img..0.23.2149.Uj4VDYLpDFU"
         )
+        # Remove ampersands from the title, as these screw up the Google query
+        title = title.replace('&', ' ')
         query = '+'.join(title.split())
         if platform:
             # I've informally observed that better results come from using 'nes'
