@@ -180,7 +180,7 @@ class GameSageGame(object):
     @staticmethod
     def get_link_to_gamenet_entry(game_id, title):
         """Return a link to this game's Gamenet entry."""
-        url = "http://gamecip-projects.soe.ucsc.edu/gamenet/games/"
+        url = "/gamenet/games/"
         url += game_id
         link = "<a href={} target=_blank>".format(url) + title + "</a>"
         return link
