@@ -3,7 +3,7 @@
   <head>
     <title>GameNet</title>
     <!-- Load Google font -->
-    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:100,300' rel='stylesheet' type='text/css'>
     <!-- Load favicon and other icons -->
     <link rel="shortcut icon" href="{{ url_for('static', filename = 'gamenet-favicon.ico') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-iphone-60x60.png') }}" />
@@ -17,12 +17,13 @@
     <style>
       body {
         font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
         font-size: 48px;
       }
       .footer {
         font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
         font-size: 24px;
-        font-weight: bold;
       }
       a:link {
         color: black;
@@ -42,6 +43,7 @@
       }
       .prompt {
         width: 75%;
+        font-weight: 100;
       }
       input[type='text'] {
         font-family: 'Josefin Sans', sans-serif;
@@ -102,9 +104,10 @@
   <!-- Display prompt text -->
   <div class=prompt id="prompt">
     {% if entered_unknown_game %}
-      I'm sorry, but that game is not included<br>in GameNet.<br><br>Please enter a different title.<br><br>
+      That game is not included in GameNet. Please enter a different title or else visit
+      <a href="/gamesage"><font color="#FF5500"> GameSage</a></font> to generate an entry for this game.<br><br>
     {% else %}
-      GameNet is a tool for videogame discovery in which related games are linked.<br><br>Which game do you want to start at?<br><br>
+      Welcome to GameNet.<br><br>Which game do you want to start at?<br><br>
     {% endif %}
   </div>
   <script type ="application/javascript" src="{{ url_for('static', filename = 'gamesDataForAutocomplete.json') }}" charset="utf-8"></script>
@@ -156,12 +159,12 @@
     </div>
     <br>
     <br>
-    <!--<div class="footer">-->
-        <!--<a href="/gamenet/about">About</a>-->
-        <!--&nbsp;&nbsp;&nbsp;-->
-        <!--<a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>-->
-        <!--&nbsp;&nbsp;&nbsp;-->
-        <!--<a href="/gamenet/faq">FAQ</a>-->
-    <!--</div>-->
+    <div class="footer">
+        <a href="/gamenet/about">About</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="/gamenet/faq">FAQ</a>
+    </div>
   </center>
 </html>

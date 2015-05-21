@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <title>About | GameNet</title>
+    <title>About | GameSage</title>
     <!-- Load Google font -->
     <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:300&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <!-- Load favicon and other icons -->
@@ -16,19 +16,19 @@
     <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-152x152.png') }}" />
   <style>
   a:link {
-    color: #33A1F9;
-    text-decoration: none;
-  }
-  a:visited {
-    color: #33A1F9;
-    text-decoration: none;
-  }
-  a:hover {
     color: #FF5500;
     text-decoration: none;
   }
+  a:visited {
+    color: #FF5500;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #abeef2;
+    text-decoration: none;
+  }
   a:active {
-    color: #33A1F9;
+    color: #FF5500;
     text-decoration: none;
   }
   body {
@@ -75,16 +75,16 @@
   </head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <center>
-  <!-- Display Gamenet logo as a link back to the home page -->
+  <!-- Display GameSage logo as a link back to the home page -->
   <div class=goBack>
-    <a href='/gamenet'>
-      <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="30">
+    <a href='/gamesage'>
+      <img border="0" alt="Go back" src={{ url_for('static', filename = 'the_gamesage.png') }} height="90">
     </a>
   </div>
   <!-- About text -->
   <div class=text>
-    <br><hr noshade="" color="black" ;="" size="1" width="78%"><br>
-    GameNet is a tool for game discovery created by UC Santa Cruz PhD students
+    <hr noshade="" color="black" ;="" size="1" width="78%"><br>
+    GameSage is a tool for game discovery created by UC Santa Cruz PhD students
       <a href="http://users.soe.ucsc.edu/~jor/" target="_blank">James Ryan</a> and
       <a href="http://erickaltman.com/" target="_blank">Eric Kaltman</a>,
       as part of the larger <a href="http://gamecip.soe.ucsc.edu/" target="_blank">
@@ -92,7 +92,7 @@
       It belongs to a suite of related tools that can all be found
       <a href="http://gamecip-projects.soe.ucsc.edu" target="_blank">here</a>.
     <br><br>
-    For technical details about how GameNet works and other information,
+    For technical details about how GameSage works and other information,
       see our <a href="/gamenet/faq">FAQ</a>, or feel free
       to <a href="mailto:jor@soe.ucsc.edu" target="_top">contact us</a>.
     <br><br>
@@ -102,11 +102,11 @@
   </div>
   <br><br><br><br>
   <div class="footer">
-    <a href="/gamenet/about"><font color="#FF5500">About</font></a>
+    <a href="/gamesage/about"><font color="#FF5500">About</font></a>
     &nbsp;&nbsp;&nbsp;
     <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>
     &nbsp;&nbsp;&nbsp;
-    <a href="/gamenet/faq">FAQ</a>
+    <a href="/gamesage/faq">FAQ</a>
   </div>
   </center>
 </html>

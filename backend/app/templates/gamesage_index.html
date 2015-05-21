@@ -3,7 +3,7 @@
   <head>
     <title>GameSage</title>
     <! -- Load Google font -->
-    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:100,300' rel='stylesheet' type='text/css'>
     <! -- Load favicon and other icons -->
     <link rel="shortcut icon" href="{{ url_for('static', filename = 'gamesage-favicon.ico') }}" type="image/x-icon" />
     <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon.png') }}" />
@@ -38,9 +38,9 @@
     <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <style>
       .prompt {
-        /*background-color: lightgray;*/
         font-family: 'Josefin Sans', sans-serif;
-        font-size: 48px;
+        font-weight: 100;
+        font-size: 46px;
         text-align: center;
         width: 85%;
       }
@@ -49,9 +49,11 @@
         font-size: 48px;
         text-align: center;
         padding-top: 5px;
+        width: 85%;
       }
       textarea {
         font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
         font-size: 28px;
         color: black;
         background-color: #EEEEEE;
@@ -59,16 +61,37 @@
         border-color: white;
         border-style: solid;
         border-width: 0px;
-        width: 85%;
+        width: 55%;
         height: 180px;
         text-align: center;
+      }
+      a:link {
+        color: black;
+        text-decoration: none;
+      }
+      a:visited {
+        color: black;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #FF5500;
+        text-decoration: none;
+      }
+      a:active {
+        color: black;
+        text-decoration: none;
+      }
+      .footer {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
+        font-size: 24px;
       }
     </style>
   </head>
 
   <body><center>
   <div class=prompt id="prompt">
-    I am GameSage.<br><br>
+    I am GameSage.<br>Click me when you are ready to begin.<br>
   </div>
     <!-- Prepare form that will be sent via POST to GameNet to generate an entry -->
     <form name="gameNetForm" method="post" action="/gamenet/game_idea">
@@ -76,11 +99,8 @@
       <input type="hidden" name="most_related_games_str" value="gameNetQuery.most_related_games_str">
       <input type="hidden" name="least_related_games_str" value="gameNetQuery.least_related_games_str">
     </form>
-  <div class="gameSageImage"><img onclick="getUserSubmittedText()" src="{{ url_for('static', filename = 'the_gamesage.png') }}" alt="" id="gameSageImage" style="height:350px"><br></div>
-  <br>
+  <div class="gameSageImage"><img onclick="getUserSubmittedText()" src="{{ url_for('static', filename = 'the_gamesage.png') }}" alt="" id="gameSageImage" style="width:72%"></div>
   <div class=prompt id="textBox">
-      I will ask you a series of questions about your game idea. Please write in complete sentences and be as specific
-      as you can.<br><br>Click me when you are ready to begin.
   </div>
   <br><br>
   <script>
@@ -88,39 +108,38 @@
     var submittedText = "";
     var currentFacet = "";
     var PROMPTS = {
-      "GENRE": "First, tell me a bit about the genre of your game. Click me<br>once you've finished writing.<br>",
-      "SETTING": "Now tell me about the setting that your game takes place in.<br>Be as specific as you can and write in complete sentences.",
-      "PLOT": "Next, tell me about the narrative or plot of your game.<br><br>",
+      "INTRO": "<br>In a moment, I will ask you a series of questions about a game (or game idea). Once you've answered these, you will be taken to my companion tool, GameNet, which will list the existing games that are most related to the one you've described. Click me to continue.",
+      "GENRE": "First, tell me a bit about the genre of this game. Click me<br>once you've finished writing.<br>",
+      "SETTING": "Now tell me about the setting that this game takes place in.<br>Be as specific as you can and write in complete sentences.",
+      "PLOT": "Next, tell me about the narrative or plot of this game.<br><br>",
       "GAMEPLAY": "Okay, now tell me about its gameplay.<br><br>",
-      "MECHANICS": "Next, tell me some of the specific actions<br>the player may take in your game.",
-      "VISUALS": "Now, tell me about the visual style of your game.<br><br>",
-      "AESTHETICS": "What other details of your game's aesthetic style<br>are worth mentioning?",
-      "UNIQUE": "Now, what makes your game unique?<br><br>",
-      "OTHER": "Lastly, tell me anything else about your game that<br>you'd like to add.",
+      "MECHANICS": "Next, tell me some of the specific actions<br>the player may take in this game.",
+      "AESTHETICS": "Now, tell me about the visual and aesthetic style of this game.<br><br>",
+      "UNIQUE": "Now, what makes this game unique?<br><br>",
+      "OTHER": "Lastly, tell me anything else about this game that<br>you'd like to add.",
       "DONE": "Okay, that is all I need to know.<br>Now, please, let me think for a moment."
     };
     var nextFacet = {
-      "": "GENRE",
+      "": "INTRO",
+      "INTRO": "GENRE",
       "GENRE": "SETTING",
       "SETTING": "PLOT",
       "PLOT": "GAMEPLAY",
       "GAMEPLAY": "MECHANICS",
-      "MECHANICS": "VISUALS",
-      "VISUALS": "AESTHETICS",
+      "MECHANICS": "AESTHETICS",
       "AESTHETICS": "UNIQUE",
       "UNIQUE": "OTHER",
       "OTHER": "DONE"
     };
     var facetExpr = {
-      "GENRE": "your game's genre",
-      "SETTING": "your game's setting",
-      "PLOT": "your game's narrative",
-      "GAMEPLAY": "your game's gameplay",
+      "GENRE": "this game's genre",
+      "SETTING": "this game's setting",
+      "PLOT": "this game's narrative",
+      "GAMEPLAY": "this game's gameplay",
       "MECHANICS": "specific actions a player may take",
-      "VISUALS": "your game's visual style",
-      "AESTHETICS": "your game's aesthetic style",
-      "UNIQUE": "what makes your game unique",
-      "OTHER": "other notable aspects of your game"
+      "AESTHETICS": "this game's aesthetic style",
+      "UNIQUE": "what makes this game unique",
+      "OTHER": "other notable aspects of this game"
     };
     function goToGeneratedGameNetEntry(gameNetQuery) {
       // Update the form that we will use to store the data
@@ -134,6 +153,23 @@
     }
     function getUserSubmittedText() {
         if (currentFacet == "") {  // Just started
+          // Remove footer (with About, Contact, FAQ links) -- these are
+          // distracting during the task and could cause unsaved information to be lost
+          // if they get visited during it
+          document.getElementById('footer').innerHTML = "";
+          // Change size of GameSage image
+          document.getElementById('gameSageImage').style.width = "55%";
+          // Change font size of prompt text
+          document.getElementById('prompt').style.fontSize = "32px";
+          document.getElementById('textBox').style.fontSize = "32px";
+          // Display the instructions below
+          document.getElementById("textBox").innerHTML = PROMPTS["INTRO"];
+          // Change to the next facet
+          currentFacet = nextFacet[currentFacet];
+          // Change the prompt text according to the new facet
+          document.getElementById("prompt").innerHTML = "Okay, let's proceed.<br><br>";
+        }
+        else if (currentFacet == "INTRO") {  // Proceed to questions
           // Display the text-input box
           document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
           // Change to the next facet
@@ -143,7 +179,7 @@
         }
         else {
           var numCharactersSubmitted = document.getElementById("userSubmittedText").value.length;
-          if (numCharactersSubmitted < 50 && currentFacet != "GENRE") {
+          if (numCharactersSubmitted < 25 && currentFacet != "GENRE") {
             console.log(numCharactersSubmitted);
             document.getElementById("prompt").innerHTML = "Please write a little more about<br>" + facetExpr[currentFacet] + '.'
           }
@@ -164,7 +200,7 @@
             document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
             // Time to submit
             if (currentFacet == "DONE") {
-              // Change the GameSage to the thinking image
+              // Change this gameSage to the thinking image
               document.getElementById("gameSageImage").src = "{{ url_for('static', filename = 'the_gamesage_thinking.png') }}";
               // Remove the text-input box
               document.getElementById("textBox").innerHTML = "";
@@ -179,6 +215,15 @@
         }
     }
   </script>
+  </div>
+      <br><br>
+  <div class="footer" id="footer">
+    <a href="/gamesage/about">About</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/gamesage/faq">FAQ</a>
+  </div>
 </center>
 </body>
 </html>

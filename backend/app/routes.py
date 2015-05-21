@@ -67,6 +67,18 @@ def gamesage_home():
     return render_template('gamesage_index.html')
 
 
+@app.route('/gamesage/about')
+def gamesage_about():
+    """Render the about page."""
+    return render_template('gamesage_about.html')
+
+
+@app.route('/gamesage/faq')
+def gamesage_faq():
+    """Render the FAQ page."""
+    return render_template('gamesage_faq.html')
+
+
 @app.route('/gamesage/submittedText', methods=['POST'])
 def generate_gamenet_query():
     """Generate a query for GameNet."""
