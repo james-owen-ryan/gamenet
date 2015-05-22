@@ -179,7 +179,8 @@
         }
         else {
           var numCharactersSubmitted = document.getElementById("userSubmittedText").value.length;
-          if (numCharactersSubmitted < 25 && currentFacet != "GENRE") {
+          <!-- if (numCharactersSubmitted < 25 && currentFacet != "GENRE") {-->
+          if (numCharactersSubmitted < 25 && currentFacet == "GAMEPLAY") {
             console.log(numCharactersSubmitted);
             document.getElementById("prompt").innerHTML = "Please write a little more about<br>" + facetExpr[currentFacet] + '.'
           }
