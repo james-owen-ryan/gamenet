@@ -136,7 +136,13 @@
     function getUserSubmittedText() {
       var numCharactersSubmitted = document.getElementById("userSubmittedText").value.length;
       if (numCharactersSubmitted < numCharsRequired) {
-        document.getElementById("prompt").innerHTML = "Please say a little more about this game.<br><br>"
+        currentPrompt = document.getElementById("prompt").innerHTML;
+        if (currentPrompt == "Please, say a little more about this game.<br><br>") {
+          document.getElementById("prompt").innerHTML = "You'll have to say a little more about this game.<br><br>"
+        }
+        else {
+          document.getElementById("prompt").innerHTML = "Please, say a little more about this game.<br><br>"
+        }
         // Make characters remaining visible
         document.getElementById("characters").style.color = "black";
       }
