@@ -115,6 +115,12 @@
   <div class=gameTitle>
     [the game you described]
   </div>
+  <form name="gameSageForm" id="gameSageForm" method="post" action="/gamesage/session">
+    <input type="hidden" name="idea_text_to_be_refined" value={{ game_idea.idea_text }}>
+  </form>
+  <div class=footer onclick="reviseDescription()">
+      Revise my description.
+  </div>
   <hr noshade="" color="black" ;="" size="1" width="78%">
   <!-- Game-dea text, which was given to the GameSage -->
   <div class=summary>
@@ -126,7 +132,7 @@
   	Related Games
   </div>
   <div class=relatedAndUnrelatedGamesSummary>
-  	Here are the 50 most related games to your idea. Click to navigate to a game's GameNet entry, unless you'd like to <a href="/gamenet" style="color: #FF5500">start from another existing game</a>. Color indicates how related a linked game is:
+  	Here are the 50 most related games to the one you described. Click to navigate to a game's GameNet entry, unless you'd like to <a href="/gamenet" style="color: #FF5500">start from another existing game</a>. Color indicates how related a linked game is:
   </div>
   <div class="relatedAndUnrelatedGamesColorKey">
   	<span style="color:white; background-color:#E64C00">&nbsp;extremely </span>
@@ -147,7 +153,7 @@
 	Disparate Games
   </div>
   <div class=relatedAndUnrelatedGamesSummary>
-  	These are the 50 most <i>un</i>related games to your idea. Click to navigate to a game's GameNet entry, unless you'd like to <a href="/gamenet" style="color: #FF5500">start from another existing game</a>. Color indicates how unrelated a linked game is:
+  	These are the 50 most <i>un</i>related games to the one you described. Click to navigate to a game's GameNet entry, unless you'd like to <a href="/gamenet" style="color: #FF5500">start from another existing game</a>. Color indicates how unrelated a linked game is:
   </div>
   <div class="relatedAndUnrelatedGamesColorKey">
   	<span style="color:white; background-color:#004CE6">&nbsp;extremely </span>
@@ -171,4 +177,12 @@
         <a href="/gamenet/faq">FAQ</a>
     </div>
   </center>
+  <script>
+    function reviseDescription() {
+        // Submit form with game_idea.text for idea_text_to_be_refined, which gets
+        // used by gamesage/session to fill in the text a person already submitted
+        // so that they may refine it
+        document.getElementById("gameSageForm").submit();
+    }
+  </script>
 </html>
