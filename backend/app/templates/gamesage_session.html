@@ -115,7 +115,12 @@
     var numCharsRequired = 250;
     $('textarea').keyup(function() {
        var charsRemaining = numCharsRequired - $(this).val().length;
-       $('#characters').text(charsRemaining);
+       if (charsRemaining > 0) {
+         $('#characters').text(charsRemaining);
+       }
+       else {
+         $('#characters').text('');
+       }
     });
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function goToGeneratedGameNetEntry(gameNetQuery) {
