@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>.
+<html>
   <head>
     <title>GameNet</title>
     <!-- Load Google font -->
@@ -96,9 +96,14 @@
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <center>
   <br>
+  <!-- Display header -->
+  <div class=prompt>
+    Welcome to GameNet.
+  </div>
+  <br>
   <!-- Display Gamenet logo [as link back to this page, to emphasize this affordance] -->
   <a href='/gamenet'>
-    <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="100px">
+    <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="150px">
   </a>
   <br><br>
   <!-- Display prompt text -->
@@ -107,7 +112,7 @@
       That game is not included in GameNet. Please enter a different title or else visit
       <a href="/gamesage"><font color="#FF5500"> GameSage</a></font> to generate an entry for this game.<br><br>
     {% else %}
-      Welcome to GameNet.<br><br>Which game do you want to start at?<br><br>
+      Which game do you want to start at?<br><br>
     {% endif %}
   </div>
   <script type ="application/javascript" src="{{ url_for('static', filename = 'gamesDataForAutocomplete.json') }}" charset="utf-8"></script>
