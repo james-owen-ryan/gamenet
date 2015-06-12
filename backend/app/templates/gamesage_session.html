@@ -114,7 +114,6 @@
       <textarea type="text" id="userSubmittedText">{{ idea_text_to_be_refined }}</textarea>
   </div>
   <script>
-    console.log("{{ idea_text_to_be_refined }}");
     var numCharsRequired = 250;
     $('textarea').keyup(function() {
        var charsRemaining = numCharsRequired - $(this).val().length;
