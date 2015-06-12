@@ -65,6 +65,14 @@
         height: 200px;
         text-align: center;
       }
+      .charsRemaining {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 100;
+        font-size: 32px;
+        text-align: center;
+        width: 85%;
+        color: white;
+      }
       a:link {
         color: black;
         text-decoration: none;
@@ -103,8 +111,13 @@
   <div class=prompt id="textBox">
       <textarea type="text" id="userSubmittedText" value=""></textarea>
   </div>
-  <br><br>
+  <br>
   <script>
+    var numCharsRequired = 250;
+    $('textarea').keyup(function() {
+       var charsRemaining = numCharsRequired - $(this).val().length;
+       $('#characters').text(charsRemaining);
+    });
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function goToGeneratedGameNetEntry(gameNetQuery) {
       // Update the form that we will use to store the data
@@ -118,9 +131,10 @@
     }
     function getUserSubmittedText() {
       var numCharactersSubmitted = document.getElementById("userSubmittedText").value.length;
-      if (numCharactersSubmitted < 250) {
-        console.log(numCharactersSubmitted);
-        document.getElementById("prompt").innerHTML = "Please write a little more about this game.<br><br>"
+      if (numCharactersSubmitted < numCharsRequired) {
+        document.getElementById("prompt").innerHTML = "Please say a little more about this game.<br><br>"
+        // Make characters remaining visible
+        document.getElementById("characters").style.color = "black";
       }
       else {
         // Time to submit
@@ -139,6 +153,7 @@
     }
   </script>
   </div>
+  <div class=charsRemaining id="characters"></div>
 </center>
 </body>
 </html>
