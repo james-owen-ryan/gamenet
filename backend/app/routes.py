@@ -276,10 +276,11 @@ def gamesage_faq():
     return render_template('gamesage_faq.html')
 
 
-@app.route('/gamesage/session')
+@app.route('/gamesage/session', methods=['POST'])
 def gamesage_session():
     """Render a GameSage session page."""
-    return render_template('gamesage_session.html')
+    idea_text_to_be_refined = request.form['idea_text_to_be_refined']
+    return render_template('gamesage_session.html', idea_text_to_be_refined=idea_text_to_be_refined)
 
 
 @app.route('/gamesage/submittedText', methods=['POST'])

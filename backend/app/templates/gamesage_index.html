@@ -93,11 +93,8 @@
   <div class=prompt id="prompt">
     I am GameSage.<br>Click me when you are ready to begin.<br>
   </div>
-    <!-- Prepare form that will be sent via POST to GameNet to generate an entry -->
-    <form name="gameNetForm" method="post" action="/gamenet/game_idea">
-      <input type="hidden" name="user_submitted_text" value="">
-      <input type="hidden" name="most_related_games_str" value="gameNetQuery.most_related_games_str">
-      <input type="hidden" name="least_related_games_str" value="gameNetQuery.least_related_games_str">
+    <form name="gameSageForm" id="gameSageForm" method="post" action="/gamesage/session">
+      <input type="hidden" name="idea_text_to_be_refined" value="">
     </form>
   <div class="gameSageImage"><img onclick="beginSession()" src="{{ url_for('static', filename = 'the_gamesage.png') }}" alt="" id="gameSageImage" style="width:72%"></div>
   <div class=prompt id="textBox">
@@ -105,7 +102,10 @@
   <br><br>
   <script>
     function beginSession() {
-        window.location = ('/gamesage/session');
+        // Submit form with empty string for idea_text_to_be_refined, which gets
+        // used by gamesage/session to fill in the text a person already submitted in
+        // the case that they want to refine it
+        document.getElementById("gameSageForm").submit();
     }
   </script>
   </div>
