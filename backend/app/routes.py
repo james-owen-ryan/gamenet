@@ -276,6 +276,12 @@ def gamesage_faq():
     return render_template('gamesage_faq.html')
 
 
+@app.route('/gamesage/session')
+def gamesage_session():
+    """Render a GameSage session page."""
+    return render_template('gamesage_session.html')
+
+
 @app.route('/gamesage/submittedText', methods=['POST'])
 def generate_gamenet_query():
     """Generate a query for GameNet."""
