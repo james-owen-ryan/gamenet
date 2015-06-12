@@ -78,6 +78,11 @@
 	  width: 80%;
       line-height: 117%;
 	}
+    .reviseLink {
+	  font-size: 18pt;
+      color: #FF5500;
+	}
+    <!--reviseLink:hover {color: red;}-->
 	.relatedAndUnrelatedGamesHeader {
 	  font-size: 48px;
       padding-bottom: 10px;
@@ -118,8 +123,8 @@
   <form name="gameSageForm" id="gameSageForm" method="post" action="/gamesage/session">
     <input type="hidden" name="idea_text_to_be_refined" value={{ game_idea.idea_text }}>
   </form>
-  <div class=footer onclick="reviseDescription()">
-      Revise my description.
+  <div class=reviseLink onclick="reviseDescription()">
+      <br><br>Revise my description
   </div>
   <hr noshade="" color="black" ;="" size="1" width="78%">
   <!-- Game-dea text, which was given to the GameSage -->
