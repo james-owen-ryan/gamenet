@@ -148,7 +148,7 @@ class GameSageQuery(db.Model):
                                                                      self.game_sage_query)
 
 
-@app.route('/icon_click', methods=['POST'])
+@app.route('/gamenet/icon_click', methods=['POST'])
 def icon_click():
     if current_user.is_authenticated():
         ic = IconClick(user=current_user, ip=request.remote_addr,
@@ -162,7 +162,11 @@ def icon_click():
             pass
     return "OK"
 
-@app.route('/gamenet/')
+@app.route('/')
+def gamecip_project_home():
+    return redirect('http://gamecip.soe.ucsc.edu/projects')
+
+@app.route('/gamenet')
 def gamenet_home():
     """Render the GameNet homepage."""
     return render_template('gamenet_index.html', entered_unknown_game=False)
@@ -262,25 +266,6 @@ def generate_gamenet_entry_for_game_idea_from_gamesage():
 def gamesage_home():
     """Render the GameSage homepage."""
     return render_template('gamesage_index.html')
-
-
-@app.route('/gamesage/about')
-def gamesage_about():
-    """Render the about page."""
-    return render_template('gamesage_about.html')
-
-
-@app.route('/gamesage/faq')
-def gamesage_faq():
-    """Render the FAQ page."""
-    return render_template('gamesage_faq.html')
-
-
-@app.route('/gamesage/session', methods=['POST'])
-def gamesage_session():
-    """Render a GameSage session page."""
-    idea_text_to_be_refined = request.form['idea_text_to_be_refined']
-    return render_template('gamesage_session.html', idea_text_to_be_refined=idea_text_to_be_refined)
 
 
 @app.route('/gamesage/submittedText', methods=['POST'])
