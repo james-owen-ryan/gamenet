@@ -108,6 +108,24 @@
   <!-- About text -->
   <div class=faq>
     <hr noshade="" color="black" ;="" size="1" width="78%"><br>
+    <div class="question">What is this?</div>
+    <br>
+    <div class="answer">GameSage is a tool for game discovery that was built using techniques from
+        <a href="http://en.wikipedia.org/wiki/Natural_language_processing" target="_blank">natural language
+            processing</a>. You can use it to discover games that you didn't know
+        about before. Starting from your description of a game, you'll get an interactive listing of
+        the existing games that are most related to it.
+    </div>
+    <br><br>
+    <div class="question">How do I use this?</div>
+    <br>
+    <div class="answer">Click the sage to begin. Once you do this, you'll be taken to a new page, where the
+        sage will ask you to describe your game. You may use a description of a game you would like to develop
+        or are developing, a game that already exists (whose title you've forgotten), the type of game you'd like
+        to play, or any other type of game description. Feel free to copy and paste text from another website or
+        from anywhere else. If you can't think of what to write about, click the button that says 'Guide Me'.
+    </div>
+    <br><br>
     <div class="question">Who made this?</div>
     <br>
     <div class="answer">UC Santa Cruz PhD students
@@ -121,7 +139,11 @@
     <br><br>
     <div class="question">How does it work?</div>
     <br>
-    <div class="answer">We built GameSage by submitting Wikipedia articles about games to
+    <div class="answer">GameSage is an interface to its companion tool
+        <a href="http://gamecip-projects.soe.ucsc.edu/gamenet" target="_blank">
+            GameNet</a>, which is is a network
+        of existing games that are linked according to how related they are to one another.
+        We built GameNet by submitting Wikipedia articles about games to
         a technique from natural language processing called latent semantic analysis (LSA).
         LSA works from the premises that words that occur in similar contexts will tend to have
         similar meanings and that texts that are composed of similar words will tend to be
@@ -138,7 +160,13 @@
         Wikipedia articles that describe individual games and submitted these to LSA. By taking the computable
         representation that LSA gave to the games' Wikipedia articles and using them as a way of representing the
         games themselves, we can automatically determine how related any game is to any other game among the
-        11,829 included in our model. This is how GameNet is able to reason about game relatedness.
+        11,829 included in our model. This is how GameNet is able to reason about game relatedness. GameSage works
+        by exploiting the notion in LSA of 'folding in', whereby a new text that was not used to train the model
+        gets injected into it. Specifically, GameSage takes a description of a game and processes it by the exact
+        same method that was used to process the original Wikipedia articles, thereby finding the existing games
+        that are most related to the description. For more information about GameSage, see this
+        <a href="https://users.soe.ucsc.edu/~jor/publications/ryanToolsForVideogameDiscovery.pdf" target="_blank">
+            this short paper</a> that accompanied a demo of the tool at a recent academic conference.
     </div>
     <br><br>
     <div class="question">Can you say more about LSA and your model?</div>
