@@ -61,6 +61,7 @@ class User(db.Model):
     icon_clicks = db.relationship('IconClick', backref='user', lazy='dynamic')
     game_sage_queries = db.relationship('GameSageQuery', backref='user', lazy='dynamic')
     game_net_queries = db.relationship('GameNetQuery', backref='user', lazy='dynamic')
+    game_net_link_clicks = db.relationship('GameNetLinkClick', backref='user', lazy='dynamic')
 
     def is_authenticated(self):
         return True
@@ -133,6 +134,23 @@ class IconClick(db.Model):
                                                                        self.game_id)
 
 
+class GameNetLinkClick(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(16))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    game_source_id = db.Column(db.Integer)
+    game_dest_id = db.Column(db.Integer)
+
+    def __repr__(self):
+        return "<GameNetLinkClick {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
+                                                                              self.ip,
+                                                                              self.user_id,
+                                                                              self.timestamp,
+                                                                              self.game_source_id,
+                                                                              self.game_dest_id)
+
+
 class GameSageQuery(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ip = db.Column(db.String(16))
@@ -153,13 +171,41 @@ def icon_click():
     if current_user.is_authenticated():
         ic = IconClick(user=current_user, ip=request.remote_addr,
                                  timestamp=datetime.now(), icon_type=request.form['icon_type'], game_id=request.form['game_id'])
-        db.session.add(ic)
-        db.session.commit()
-        try:
-            if logger:
-                logger.debug(ic)
-        except NameError:
-            pass
+    else:
+        ic = IconClick(user=None, ip=request.remote_addr,
+                       timestamp=datetime.now(), icon_type=request.form['icon_type'], game_id=request.form['game_id'])
+    db.session.add(ic)
+    db.session.commit()
+    try:
+        if logger:
+            logger.debug(ic)
+    except NameError:
+        pass
+
+    return "OK"
+
+@app.route('/gamenet/gamenet_link_click', methods=['POST'])
+def game_link_click():
+    if current_user.is_authenticated():
+        gl = GameNetLinkClick(user=current_user,
+                              ip=request.remote_addr,
+                              timestamp=datetime.now(),
+                              game_source_id=request.form['game_source_id'],
+                              game_dest_id=request.form['game_dest_id'])
+    else:
+        gl = GameNetLinkClick(user=None,
+                              ip=request.remote_addr,
+                              timestamp=datetime.now(),
+                              game_source_id=request.form['game_source_id'],
+                              game_dest_id=request.form['game_dest_id'])
+
+    db.session.add(gl)
+    db.session.commit()
+    try:
+        if logger:
+            logger.debug(gl)
+    except NameError:
+        pass
     return "OK"
 
 @app.route('/')
@@ -190,14 +236,18 @@ def render_gamenet_entry_given_game_title(selected_game_title):
         selected_game = next(g for g in app.gamenet_database if g.title.lower() == selected_game_title.lower())
 
         if current_user.is_authenticated():
-            db.session.add(GameNetQuery(user=current_user, ip=request.remote_addr,
-                                        game_query=selected_game_title, game_id=selected_game.id, timestamp=datetime.now()))
-            db.session.commit()
-            try:
-                if logger:
-                    logger.debug(gnq)
-            except NameError:
-                pass
+            gnq = GameNetQuery(user=current_user, ip=request.remote_addr,
+                                        game_query=selected_game_title, game_id=selected_game.id, timestamp=datetime.now())
+        else:
+            gnq = GameNetQuery(user=None, ip=request.remote_addr,
+                               game_query=selected_game_title, game_id=selected_game.id, timestamp=datetime.now())
+        db.session.add(gnq)
+        db.session.commit()
+        try:
+            if logger:
+                logger.debug(gnq)
+        except NameError:
+            pass
 
         return render_template('game.html', game=selected_game)
     else:
@@ -206,13 +256,17 @@ def render_gamenet_entry_given_game_title(selected_game_title):
         if current_user.is_authenticated():
             gnq = GameNetQuery(user=current_user, ip=request.remote_addr,
                                         game_query=selected_game_title, timestamp=datetime.now())
-            db.session.add(gnq)
-            db.session.commit()
-            try:
-                if logger:
-                    logger.debug(gnq)
-            except NameError:
-                pass
+        else:
+            gnq = GameNetQuery(user=None, ip=request.remote_addr,
+                               game_query=selected_game_title, timestamp=datetime.now())
+
+        db.session.add(gnq)
+        db.session.commit()
+        try:
+            if logger:
+                logger.debug(gnq)
+        except NameError:
+            pass
 
 
         return render_template('gamenet_index.html', entered_unknown_game=True)
@@ -224,13 +278,17 @@ def render_gamenet_entry_given_game_id(selected_game_id):
     selected_game = app.gamenet_database[int(selected_game_id)]
     if current_user.is_authenticated():
         gngr = GameNetGameRequest(user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now())
-        db.session.add(gngr)
-        db.session.commit()
-        try:
-            if logger:
-                logger.debug(gngr)
-        except NameError:
-            pass
+    else:
+        gngr = GameNetGameRequest(user=None, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now())
+
+    db.session.add(gngr)
+    db.session.commit()
+    try:
+        if logger:
+            logger.debug(gngr)
+    except NameError:
+        pass
+
     return render_template('game.html', game=selected_game)
 
 
@@ -243,13 +301,17 @@ def generate_gamenet_entry_for_game_idea_from_gamesage():
 
     if current_user.is_authenticated():
         gsq = GameSageQuery(user=current_user, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now())
-        db.session.add(gsq)
-        db.session.commit()
-        try:
-            if logger:
-                logger.debug(gsq)
-        except NameError:
-            pass
+    else:
+        gsq = GameSageQuery(user=None, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now())
+
+    db.session.add(gsq)
+    db.session.commit()
+
+    try:
+        if logger:
+            logger.debug(gsq)
+    except NameError:
+        pass
 
     game_idea = GameIdea(
         idea_text=idea_text, related_games_str=related_games_str, unrelated_games_str=unrelated_games_str
