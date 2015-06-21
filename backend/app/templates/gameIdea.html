@@ -112,7 +112,7 @@
       font-family: 'Josefin Sans', sans-serif;
       font-weight: 300;
       font-size: 20pt;
-      padding: 8px;
+      padding: 2px;
       background-color: #FF5500;
       border: none;
       -moz-border-radius: 0px;
@@ -122,11 +122,11 @@
       -moz-box-shadow: none;
       -webkit-box-shadow: none;
       box-shadow: none;
-      // cursor: pointer;
+      cursor: pointer;
       display: block;
     }
     .button input[type="button"]:hover {
-      background-color:#D0F4F6;
+      // background-color:#D0F4F6;
       color:black;
     }
 	</style>
@@ -151,6 +151,7 @@
   <div class="button">
       <input type="button" value="revise description" onClick="reviseDescription()">
   </div>
+  <br>
   <!-- Game-dea text, which was given to the GameSage -->
   <div class=summary>
   	{{ game_idea.idea_text |safe }}
