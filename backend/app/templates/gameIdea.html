@@ -107,6 +107,29 @@
       font-size: 32px;
       width:100%;
     }
+    .button input[type="button"] {
+      float: right;
+      color:white;
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 300;
+      font-size: 90%;
+      padding: 8px;
+      background-color: #FF5500;
+      border: none;
+      -moz-border-radius: 0px;
+      -webkit-border-radius: 0px;
+      border-radius: 0px;
+      border-bottom: 0px solid white;
+      -moz-box-shadow: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      // cursor: pointer;
+      display: block;
+    }
+    .button input[type="button"]:hover {
+      background-color:#D0F4F6;
+      color:black;
+    }
 	</style>
   </head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
@@ -125,8 +148,8 @@
   <form name="gameSageForm" id="gameSageForm" method="post" action="/gamesage/session">
     <input type="hidden" name="idea_text_to_be_refined" value="{{ game_idea.idea_text }}">
   </form>
-  <div class=reviseLink onclick="reviseDescription()">
-      <br>revise my description
+  <div class="button">
+      <input type="button" value="REVISE DESCRIPTION" onClick="reviseDescription()">
   </div>
   <hr noshade="" color="black" ;="" size="1" width="78%">
   <!-- Game-dea text, which was given to the GameSage -->
