@@ -96,6 +96,7 @@
         font-size: 24px;
       }
       .button input[type="button"] {
+        float: right;
         color:white;
         font-family: 'Josefin Sans', sans-serif;
         font-weight: 300;
@@ -124,6 +125,9 @@
   <body><center>
   <div class=prompt id="prompt">
     Tell me anything and everything about this game.<br>Click me once you've done this.
+  </div>
+  <div class="button">
+      <input type="button" value="GUIDE ME" onClick="document.location.reload(true)">
   </div>
     <!-- Prepare form that will be sent via POST to GameNet to generate an entry -->
     <form name="gameNetForm" method="post" action="/gamenet/game_idea">
@@ -190,9 +194,6 @@
   </script>
   </div>
   <div class=charsRemaining id="characters"></div>
-  <div class="button">
-      <input type="button" value="I don't know what to write. Guide me." onClick="document.location.reload(true)">
-  </div>
 </center>
   <!-- Google Analytics Snippet -->
   <script>
