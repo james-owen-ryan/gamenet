@@ -176,53 +176,48 @@
           var numCharactersSubmitted = document.getElementById("userSubmittedText").value.length;
           // Append the just-submitted facet description to the full query, which we are
           // incrementally building up as each new facet description gets submitted
-          if (currentFacet == "GENRE") {
-            submittedText += document.getElementById("userSubmittedText").value;
+          if (document.getElementById("userSubmittedText").value != '' && submittedText.slice(-1) != '.') {
+            submittedText += '. ' + document.getElementById("userSubmittedText").value;
           }
-          else {
-            if (document.getElementById("userSubmittedText").value != '' && submittedText.slice(-1) != '.') {
-              submittedText += '. ' + document.getElementById("userSubmittedText").value;
-            }
-            else if (document.getElementById("userSubmittedText").value != '') {
-              submittedText += ' ' + document.getElementById("userSubmittedText").value;
-            }
-          }
-          // Remove the just-submitted text from the text-input box
-          document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
-          // Change to the next facet
-          currentFacet = nextFacet[currentFacet];
-          // Change the prompt text according to the new facet
-          document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
-          if (currentFacet == "DONE") {
-            // If they haven't entered enough text, solicit more
-            var numCharactersSubmitted = submittedText.length;
-            if (numCharactersSubmitted < numCharsRequired) {
-              currentPrompt = document.getElementById("prompt").innerHTML;
-              if (currentPrompt == "Please, say a little more about this game.<br><br>") {
-                document.getElementById("prompt").innerHTML = "You'll have to say a little more about this game.<br><br>"
-              }
-              else {
-                document.getElementById("prompt").innerHTML = "You haven't quite written enough about this game.<br>Please tell me a bit more about it.<br>"
-              }
-              // Make characters remaining visible
-              document.getElementById("characters").style.color = "black";
-            }
-            else {
-              // Time to submit
-              // Change this gameSage to the thinking image
-              document.getElementById("gameSageImage").src = "{{ url_for('static', filename = 'the_gamesage_thinking.png') }}";
-              // Remove the text-input box
-              document.getElementById("textBox").innerHTML = "";
-              // Get JSON of generated GameNet query back from Flask (do this by submitting a form with
-              // the user's submitted game idea via POST) [this url needs to be changed to /submittedText to test
-              // this app locally]
-              $.post("/gamesage/submittedText", { user_submitted_text : submittedText }, function(data) {
-                goToGeneratedGameNetEntry(mostRelatedGame=data);
-              }, "json");
-            }
+          else if (document.getElementById("userSubmittedText").value != '') {
+            submittedText += ' ' + document.getElementById("userSubmittedText").value;
           }
         }
-    }
+        // Remove the just-submitted text from the text-input box
+        document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
+        // Change to the next facet
+        currentFacet = nextFacet[currentFacet];
+        // Change the prompt text according to the new facet
+        document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
+        if (currentFacet == "DONE") {
+          // If they haven't entered enough text, solicit more
+          var numCharactersSubmitted = submittedText.length;
+          if (numCharactersSubmitted < numCharsRequired) {
+            currentPrompt = document.getElementById("prompt").innerHTML;
+            if (currentPrompt == "Please, say a little more about this game.<br><br>") {
+              document.getElementById("prompt").innerHTML = "You'll have to say a little more about this game.<br><br>"
+            }
+            else {
+              document.getElementById("prompt").innerHTML = "You haven't quite written enough about this game.<br>Please tell me a bit more about it.<br>"
+            }
+            // Make characters remaining visible
+            document.getElementById("characters").style.color = "black";
+          }
+          else {
+            // Time to submit
+            // Change this gameSage to the thinking image
+            document.getElementById("gameSageImage").src = "{{ url_for('static', filename = 'the_gamesage_thinking.png') }}";
+            // Remove the text-input box
+            document.getElementById("textBox").innerHTML = "";
+            // Get JSON of generated GameNet query back from Flask (do this by submitting a form with
+            // the user's submitted game idea via POST) [this url needs to be changed to /submittedText to test
+            // this app locally]
+            $.post("/gamesage/submittedText", { user_submitted_text : submittedText }, function(data) {
+              goToGeneratedGameNetEntry(mostRelatedGame=data);
+            }, "json");
+          }
+        }
+        }
   </script>
   </div>
     <div class=charsRemaining id="characters"></div>
