@@ -178,7 +178,10 @@
             submittedText += document.getElementById("userSubmittedText").value;
           }
           else {
-            submittedText += ' // ' + document.getElementById("userSubmittedText").value;
+            if (submittedText.slice(-1) != '.') {
+              submittedText += '.'
+            }
+            submittedText += ' ' + document.getElementById("userSubmittedText").value;
           }
           // Remove the just-submitted text from the text-input box
           document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
