@@ -114,9 +114,10 @@
   </div>
   <br><br>
   <script>
+    var submittedText = "";
     var numCharsRequired = 250;
     $('textarea').keyup(function() {
-       var charsRemaining = numCharsRequired - $(this).val().length;
+       var charsRemaining = numCharsRequired - $(this).val().length + submittedText.length;
        if (charsRemaining > 0) {
          $('#characters').text(charsRemaining);
        }
@@ -125,7 +126,6 @@
        }
     });
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-    var submittedText = "";
     var currentFacet = "INTRO";
     var PROMPTS = {
       "INTRO": "",
