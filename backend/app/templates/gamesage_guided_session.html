@@ -137,7 +137,6 @@
       "DEVELOPMENT": "Next, tell me anything about the development of this game.<br><br>",
       "RECEPTION": "How was this game critically received?<br><br>",
       "OTHER": "Lastly, tell me anything else about this game that<br>you'd like to add.",
-      "DONE": "You haven't quite written enough about this game.<br>Please tell me a bit more about it.<br>"
     };
     var nextFacet = {
       "INTRO": "GENRE",
@@ -197,7 +196,9 @@
         // Change to the next facet
         currentFacet = nextFacet[currentFacet];
         // Change the prompt text according to the new facet
-        document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
+        if (currentFacet != "DONE") {
+            document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
+        }
         if (currentFacet == "DONE") {
           // If they haven't entered enough text, solicit more
           var numCharactersSubmitted = submittedText.length;
