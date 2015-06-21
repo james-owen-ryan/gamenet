@@ -178,10 +178,12 @@
             submittedText += document.getElementById("userSubmittedText").value;
           }
           else {
-            if (submittedText.slice(-1) != '.') {
-              submittedText += '.'
+            if (document.getElementById("userSubmittedText").value != '' && submittedText.slice(-1) != '.') {
+              submittedText += '. ' + document.getElementById("userSubmittedText").value;
             }
-            submittedText += ' ' + document.getElementById("userSubmittedText").value;
+            else if (document.getElementById("userSubmittedText").value != '') {
+              submittedText += ' ' + document.getElementById("userSubmittedText").value;
+            }
           }
           // Remove the just-submitted text from the text-input box
           document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
