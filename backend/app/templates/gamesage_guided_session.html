@@ -161,6 +161,7 @@
       formObject.submit();
     }
     function getUserSubmittedText() {
+        document.getElementById("footer").innerHTML = "";
         if (currentFacet == "INTRO") {  // Proceed to questions
           // Display the text-input box
           document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
