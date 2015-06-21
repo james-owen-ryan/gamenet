@@ -137,7 +137,7 @@
       "DEVELOPMENT": "Next, tell me anything about the development of this game.<br><br>",
       "RECEPTION": "How was this game critically received?<br><br>",
       "OTHER": "Lastly, tell me anything else about this game that<br>you'd like to add.",
-      "DONE": "Okay, that is all I need to know.<br>Now, please, let me think for a moment."
+      "DONE": "You haven't quite written enough about this game.<br>Please tell me a bit more about it.<br>"
     };
     var nextFacet = {
       "INTRO": "GENRE",
@@ -215,6 +215,7 @@
           }
           else {
             // Time to submit
+            document.getElementById("prompt").innerHTML = "Okay, that is all I need to know.<br>Now, please, let me think for a moment."
             // Change this gameSage to the thinking image
             document.getElementById("gameSageImage").src = "{{ url_for('static', filename = 'the_gamesage_thinking.png') }}";
             // Remove the text-input box
