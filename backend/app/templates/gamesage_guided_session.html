@@ -167,11 +167,6 @@
           // distracting during the task and could cause unsaved information to be lost
           // if they get visited during it
           document.getElementById('footer').innerHTML = "";
-          // Change size of GameSage image
-          document.getElementById('gameSageImage').style.width = "55%";
-          // Change font size of prompt text
-          document.getElementById('prompt').style.fontSize = "32px";
-          document.getElementById('textBox').style.fontSize = "32px";
           // Display the instructions below
           document.getElementById("textBox").innerHTML = PROMPTS["INTRO"];
           // Change to the next facet
@@ -232,7 +227,7 @@
       ga('send', 'pageview');
 
   </script>
-  <div class="footer" id="footer">Click me to continue.</div>  <!-- Some opening prompt text gets put here -->
+  <div class="prompt" id="footer">Click me to continue.</div>  <!-- Some opening prompt text gets put here -->
 </center>
 </body>
 </html>
