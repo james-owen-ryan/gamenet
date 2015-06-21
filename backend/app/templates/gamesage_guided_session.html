@@ -116,7 +116,7 @@
   <script>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     var submittedText = "";
-    var currentFacet = "";
+    var currentFacet = "INTRO";
     var PROMPTS = {
       "INTRO": "",
       "GENRE": "First, tell me a bit about the genre of this game. Click me<br>once you've finished writing.<br>",
@@ -130,7 +130,6 @@
       "DONE": "Okay, that is all I need to know.<br>Now, please, let me think for a moment."
     };
     var nextFacet = {
-      "": "INTRO",
       "INTRO": "GENRE",
       "GENRE": "SETTING",
       "SETTING": "PLOT",
@@ -162,19 +161,7 @@
       formObject.submit();
     }
     function getUserSubmittedText() {
-        if (currentFacet == "") {  // Just started
-          // Remove footer (with About, Contact, FAQ links) -- these are
-          // distracting during the task and could cause unsaved information to be lost
-          // if they get visited during it
-          document.getElementById('footer').innerHTML = "";
-          // Display the instructions below
-          document.getElementById("textBox").innerHTML = PROMPTS["INTRO"];
-          // Change to the next facet
-          currentFacet = nextFacet[currentFacet];
-          // Change the prompt text according to the new facet
-          document.getElementById("prompt").innerHTML = "Okay, let's proceed.<br><br>";
-        }
-        else if (currentFacet == "INTRO") {  // Proceed to questions
+        if (currentFacet == "INTRO") {  // Proceed to questions
           // Display the text-input box
           document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
           // Change to the next facet
