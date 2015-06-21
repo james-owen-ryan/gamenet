@@ -204,7 +204,6 @@
           var numCharactersSubmitted = submittedText.length;
           if (numCharactersSubmitted < numCharsRequired) {
             currentPrompt = document.getElementById("prompt").innerHTML;
-            alert(currentPrompt);
             if (currentPrompt == "You haven't quite written enough about this game.<br>Please tell me a bit more about it.<br>") {
               document.getElementById("prompt").innerHTML = "You'll have to say a little more about this game.<br><br>";
             }
