@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>GameSage</title>
+    <! -- Load Google font -->
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:100,300' rel='stylesheet' type='text/css'>
+    <! -- Load favicon and other icons -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'gamesage-favicon.ico') }}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon.png') }}" />
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-57x57.png') }}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-152x152.png') }}" />
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'gamesage-favicon.ico') }}" type="image/x-icon" />
+    <link rel="apple-touch-icon" sizes="57x57" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-57x57.png') }}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-60x60.png') }}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-72x72.png') }}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-76x76.png') }}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-114x114.png') }}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-120x120.png') }}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-152x152.png') }}" />
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ url_for('static', filename = 'gamesage-apple-touch-icon-180x180.png') }}" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'gamesage-favicon-16x16.png') }}" sizes="16x16">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'gamesage-favicon-32x32.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'gamesage-favicon-96x96.png') }}" sizes="96x96">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'gamesage-android-chrome-192x192.png') }}" sizes="192x192">
+    <meta name="msapplication-square70x70logo" content="{{ url_for('static', filename = 'gamesage-smalltile.png') }}" />
+    <meta name="msapplication-square150x150logo" content="{{ url_for('static', filename = 'gamesage-mediumtile.png') }}" />
+    <meta name="msapplication-wide310x150logo" content="{{ url_for('static', filename = 'gamesage-widetile.png') }}" />
+    <meta name="msapplication-square310x310logo" content="{{ url_for('static', filename = 'gamesage-largetile.png') }}" />
+    <! -- Load jQuery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <style>
+      .prompt {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 100;
+        font-size: 46px;
+        text-align: center;
+        width: 85%;
+      }
+      .gameSageImage {
+        font-family: 'Josefin Sans', sans-serif;
+        font-size: 48px;
+        text-align: center;
+        padding-top: 5px;
+        width: 85%;
+      }
+      textarea {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
+        font-size: 28px;
+        color: black;
+        background-color: #EEEEEE;
+        <!--background-color: #7EE6D4;-->
+        border-color: white;
+        border-style: solid;
+        border-width: 0px;
+        width: 55%;
+        height: 180px;
+        text-align: center;
+      }
+      a:link {
+        color: black;
+        text-decoration: none;
+      }
+      a:visited {
+        color: black;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #FF5500;
+        text-decoration: none;
+      }
+      a:active {
+        color: black;
+        text-decoration: none;
+      }
+      .footer {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+
+  <body><center>
+  <div class=prompt id="prompt">
+    I am GameSage.<br>Click me when you are ready to begin.<br>
+  </div>
+    <!-- Prepare form that will be sent via POST to GameNet to generate an entry -->
+    <form name="gameNetForm" method="post" action="/gamenet/game_idea">
+      <input type="hidden" name="user_submitted_text" value="">
+      <input type="hidden" name="most_related_games_str" value="gameNetQuery.most_related_games_str">
+      <input type="hidden" name="least_related_games_str" value="gameNetQuery.least_related_games_str">
+    </form>
+  <div class="gameSageImage"><img onclick="getUserSubmittedText()" src="{{ url_for('static', filename = 'the_gamesage.png') }}" alt="" id="gameSageImage" style="width:72%"></div>
+  <div class=prompt id="textBox">
+  </div>
+  <br><br>
+  <script>
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    var submittedText = "";
+    var currentFacet = "";
+    var PROMPTS = {
+      "INTRO": "<br>In a moment, I will ask you a series of questions about a game (or game idea). Feel free to skip as many of these questions as you'd like. Click me to continue.",
+      "GENRE": "First, tell me a bit about the genre of this game. Click me<br>once you've finished writing.<br>",
+      "SETTING": "Now tell me about the setting that this game takes place in.<br>Be as specific as you can and write in complete sentences.",
+      "PLOT": "Next, tell me about the narrative or plot of this game.<br><br>",
+      "GAMEPLAY": "Okay, now tell me about its gameplay.<br><br>",
+      "AESTHETICS": "Now, tell me about the visual and aesthetic style of this game.<br><br>",
+      "DEVELOPMENT": "Next, tell me anything about the development of this game.<br><br>",
+      "RECEPTION": "How was this game critically received?<br><br>",
+      "OTHER": "Lastly, tell me anything else about this game that<br>you'd like to add.",
+      "DONE": "Okay, that is all I need to know.<br>Now, please, let me think for a moment."
+    };
+    var nextFacet = {
+      "": "INTRO",
+      "INTRO": "GENRE",
+      "GENRE": "SETTING",
+      "SETTING": "PLOT",
+      "PLOT": "GAMEPLAY",
+      "GAMEPLAY": "AESTHETICS",
+      "AESTHETICS": "DEVELOPMENT",
+      "DEVELOPMENT": "RECEPTION",
+      "RECEPTION": "OTHER",
+      "OTHER": "DONE"
+    };
+    var facetExpr = {
+      "GENRE": "this game's genre",
+      "SETTING": "this game's setting",
+      "PLOT": "this game's narrative",
+      "GAMEPLAY": "this game's gameplay",
+      "AESTHETICS": "this game's aesthetic style",
+      "DEVELOPMENT": "this game's development",
+      "RECEPTION": "this game's critical reception",
+      "OTHER": "other notable aspects of this game"
+    };
+    function goToGeneratedGameNetEntry(gameNetQuery) {
+      // Update the form that we will use to store the data
+      // that GameNet needs to generate an entry for this game idea
+      formObject = document.forms['gameNetForm'];
+      formObject.elements["user_submitted_text"].value = gameNetQuery.user_submitted_text;
+      formObject.elements["most_related_games_str"].value = gameNetQuery.most_related_games_str;
+      formObject.elements["least_related_games_str"].value = gameNetQuery.least_related_games_str;
+      // Submit the updated form via POST
+      formObject.submit();
+    }
+    function getUserSubmittedText() {
+        if (currentFacet == "") {  // Just started
+          // Remove footer (with About, Contact, FAQ links) -- these are
+          // distracting during the task and could cause unsaved information to be lost
+          // if they get visited during it
+          document.getElementById('footer').innerHTML = "";
+          // Change size of GameSage image
+          document.getElementById('gameSageImage').style.width = "55%";
+          // Change font size of prompt text
+          document.getElementById('prompt').style.fontSize = "32px";
+          document.getElementById('textBox').style.fontSize = "32px";
+          // Display the instructions below
+          document.getElementById("textBox").innerHTML = PROMPTS["INTRO"];
+          // Change to the next facet
+          currentFacet = nextFacet[currentFacet];
+          // Change the prompt text according to the new facet
+          document.getElementById("prompt").innerHTML = "Okay, let's proceed.<br><br>";
+        }
+        else if (currentFacet == "INTRO") {  // Proceed to questions
+          // Display the text-input box
+          document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
+          // Change to the next facet
+          currentFacet = nextFacet[currentFacet];
+          // Change the prompt text according to the new facet
+          document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
+        }
+        else {
+          var numCharactersSubmitted = document.getElementById("userSubmittedText").value.length;
+          // Append the just-submitted facet description to the full query, which we are
+          // incrementally building up as each new facet description gets submitted
+          if (currentFacet == "GENRE") {
+            submittedText += document.getElementById("userSubmittedText").value;
+          }
+          else {
+            submittedText += ' // ' + document.getElementById("userSubmittedText").value;
+          }
+          // Remove the just-submitted text from the text-input box
+          document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
+          // Change to the next facet
+          currentFacet = nextFacet[currentFacet];
+          // Change the prompt text according to the new facet
+          document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
+          // Time to submit
+          if (currentFacet == "DONE") {
+            // Change this gameSage to the thinking image
+            document.getElementById("gameSageImage").src = "{{ url_for('static', filename = 'the_gamesage_thinking.png') }}";
+            // Remove the text-input box
+            document.getElementById("textBox").innerHTML = "";
+            // Get JSON of generated GameNet query back from Flask (do this by submitting a form with
+            // the user's submitted game idea via POST) [this url needs to be changed to /submittedText to test
+            // this app locally]
+            $.post("/gamesage/submittedText", { user_submitted_text : submittedText }, function(data) {
+              goToGeneratedGameNetEntry(mostRelatedGame=data);
+            }, "json");
+          }
+        }
+    }
+  </script>
+  </div>
+      <br>
+    <!-- Google Analytics Snippet -->
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-64301562-1', 'auto');
+      ga('send', 'pageview');
+
+  </script>
+</center>
+</body>
+</html>
