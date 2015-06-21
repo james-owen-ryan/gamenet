@@ -38,9 +38,10 @@
     <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <style>
       .prompt {
+        float: middle;
         font-family: 'Josefin Sans', sans-serif;
         font-weight: 100;
-        font-size: 46px;
+        font-size: 32px;
         text-align: center;
         width: 85%;
       }
@@ -49,7 +50,8 @@
         font-size: 48px;
         text-align: center;
         padding-top: 5px;
-        width: 85%;
+        width: 65%;
+        cursor: pointer;
       }
       textarea {
         font-family: 'Josefin Sans', sans-serif;
@@ -62,8 +64,16 @@
         border-style: solid;
         border-width: 0px;
         width: 55%;
-        height: 180px;
+        height: 200px;
         text-align: center;
+      }
+      .charsRemaining {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 100;
+        font-size: 32px;
+        text-align: center;
+        width: 85%;
+        color: white;
       }
       a:link {
         color: black;
