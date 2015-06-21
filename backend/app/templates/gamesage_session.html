@@ -94,6 +94,27 @@
         font-weight: 300;
         font-size: 24px;
       }
+      .button input[type="button"] {
+        color:white;
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 100;
+        font-size: 90%;
+        padding: 14px;
+        background-color: #FF5500;
+        -moz-border-radius: 0px;
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+        border-bottom: 0px solid white;
+        -moz-box-shadow: inset 0 0px 0 rgba(255,255,255,0.5);
+        -webkit-box-shadow: inset 0 0px 0 rgba(255,255,255,0.5);
+        box-shadow: inset 0 0px 0 rgba(255,255,255,0.5);
+        cursor: pointer;
+        display: block;
+        width: 55%;
+      }
+      .button input[type="button"]:hover {
+        background-color:#D0F4F6;
+      }
     </style>
   </head>
 
@@ -166,6 +187,9 @@
   </script>
   </div>
   <div class=charsRemaining id="characters"></div>
+  <div class="button">
+      <input type="button" value="I don't know what to write. Guide me." onClick="document.location.reload(true)">
+  </div>
 </center>
   <!-- Google Analytics Snippet -->
   <script>
