@@ -147,10 +147,10 @@
   <form name="gameSageForm" id="gameSageForm" method="post" action="/gamesage/session">
     <input type="hidden" name="idea_text_to_be_refined" value="{{ game_idea.idea_text }}">
   </form>
-  <div class="button">
-      <input type="button" value="REVISE DESCRIPTION" onClick="reviseDescription()">
-  </div>
   <hr noshade="" color="black" ;="" size="1" width="78%">
+  <div class="button">
+      <input type="button" value="revise description" onClick="reviseDescription()">
+  </div>
   <!-- Game-dea text, which was given to the GameSage -->
   <div class=summary>
   	{{ game_idea.idea_text |safe }}
