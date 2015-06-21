@@ -126,7 +126,7 @@
   <div class=prompt id="prompt">
     Tell me anything and everything about this game.<br>Click me once you've done this.
   </div>
-  <div class="button">
+  <div class="button" id="button">
       <input type="button" value="GUIDE ME" onClick="location.href='/gamesage/session/guided'">
   </div>
     <!-- Prepare form that will be sent via POST to GameNet to generate an entry -->
@@ -182,6 +182,7 @@
         // Change this gameSage to the thinking image
         document.getElementById("gameSageImage").src = "{{ url_for('static', filename = 'the_gamesage_thinking.png') }}";
         document.getElementById("prompt").innerHTML = "Okay, that is all I need to know.<br>Now, please, let me think for a moment.";
+        document.getElementById("button").innerHTML = "";
         // Remove the text-input box
         document.getElementById("textBox").innerHTML = "";
         // Get JSON of generated GameNet query back from Flask (do this by submitting a form with
