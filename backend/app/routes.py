@@ -349,8 +349,8 @@ def gamesage_session():
     return render_template('gamesage_session.html', idea_text_to_be_refined=idea_text_to_be_refined)
 
 
-@app.route('/gamesage/guided')
-def gamesage_session():
+@app.route('/gamesage/session/guided')
+def gamesage_guided_session():
     """Render a guided GameSage session page."""
     return render_template('gamesage_guided_session.html')
 
