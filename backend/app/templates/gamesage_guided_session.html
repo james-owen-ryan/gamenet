@@ -91,7 +91,7 @@
 
   <body><center>
   <div class=prompt id="prompt">
-    I am GameSage.<br>Click me when you are ready to begin.<br>
+    In a moment, I will ask you a series of questions about a game (or game idea). Feel free to skip as many of these questions as you'd like. Click me to continue.<br>
   </div>
     <!-- Prepare form that will be sent via POST to GameNet to generate an entry -->
     <form name="gameNetForm" method="post" action="/gamenet/game_idea">
@@ -108,7 +108,7 @@
     var submittedText = "";
     var currentFacet = "";
     var PROMPTS = {
-      "INTRO": "<br>In a moment, I will ask you a series of questions about a game (or game idea). Feel free to skip as many of these questions as you'd like. Click me to continue.",
+      "INTRO": "",
       "GENRE": "First, tell me a bit about the genre of this game. Click me<br>once you've finished writing.<br>",
       "SETTING": "Now tell me about the setting that this game takes place in.<br>Be as specific as you can and write in complete sentences.",
       "PLOT": "Next, tell me about the narrative or plot of this game.<br><br>",
