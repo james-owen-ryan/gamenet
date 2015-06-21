@@ -193,7 +193,7 @@
           document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
           if (currentFacet == "DONE") {
             // If they haven't entered enough text, solicit more
-            var numCharactersSubmitted = document.getElementById("userSubmittedText").value.length;
+            var numCharactersSubmitted = submittedText.length;
             if (numCharactersSubmitted < numCharsRequired) {
               currentPrompt = document.getElementById("prompt").innerHTML;
               if (currentPrompt == "Please, say a little more about this game.<br><br>") {
