@@ -175,8 +175,6 @@
         if (currentFacet == "INTRO") {  // Proceed to questions
           // Display the text-input box
           document.getElementById("textBox").innerHTML = '<textarea type="text" id="userSubmittedText" value=""></textarea>';
-          // Change to the next facet
-          currentFacet = nextFacet[currentFacet];
           // Change the prompt text according to the new facet
           document.getElementById("prompt").innerHTML = PROMPTS[currentFacet];
         }
