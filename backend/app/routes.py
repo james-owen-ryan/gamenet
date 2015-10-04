@@ -251,13 +251,13 @@ def gamenet_faq():
 
 
 @app.route('/gamenet/ontology')
-def gamenet_home():
+def gamenet_home_ontology():
     """Render the home page of the ontology network."""
     return render_template('gamenet_index-ontology.html', entered_unknown_game=False)
 
 
 @app.route('/gamenet/ontology/findByTitle=<selected_game_title>')
-def render_gamenet_entry_given_game_title(selected_game_title):
+def render_gamenet_entry_given_game_title_ontology(selected_game_title):
     if any(game for game in app.gamenet_ontology_database if game.title.lower() == selected_game_title.lower()):
         selected_game = next(
             game for game in app.gamenet_ontology_database if game.title.lower() == selected_game_title.lower()
@@ -302,7 +302,7 @@ def render_gamenet_entry_given_game_title(selected_game_title):
 
 
 @app.route('/gamenet/ontology/games/<selected_game_id>')
-def render_gamenet_entry_given_game_id(selected_game_id):
+def render_gamenet_entry_given_game_id_ontology(selected_game_id):
     """Render the GameNet entry for a user-selected game."""
     selected_game = app.gamenet_ontology_database[int(selected_game_id)]
     if current_user.is_authenticated():
@@ -324,13 +324,13 @@ def render_gamenet_entry_given_game_id(selected_game_id):
 
 
 @app.route('/gamenet/gameplay')
-def gamenet_home():
+def gamenet_home_gameplay():
     """Render the home page of the ontology network."""
     return render_template('gamenet_index-gameplay.html', entered_unknown_game=False)
 
 
 @app.route('/gamenet/gameplay/findByTitle=<selected_game_title>')
-def render_gamenet_entry_given_game_title(selected_game_title):
+def render_gamenet_entry_given_game_title_gameplay(selected_game_title):
     if any(game for game in app.gamenet_gameplay_database if game.title.lower() == selected_game_title.lower()):
         selected_game = next(
             game for game in app.gamenet_gameplay_database if game.title.lower() == selected_game_title.lower()
@@ -375,7 +375,7 @@ def render_gamenet_entry_given_game_title(selected_game_title):
 
 
 @app.route('/gamenet/gameplay/games/<selected_game_id>')
-def render_gamenet_entry_given_game_id(selected_game_id):
+def render_gamenet_entry_given_game_id_gameplay(selected_game_id):
     """Render the GameNet entry for a user-selected game."""
     # Because we have gaps in the IDs held by all games (unlike in the ontology network,
     # which has all IDs in the range 0-11828), we have to find the selected game differently
