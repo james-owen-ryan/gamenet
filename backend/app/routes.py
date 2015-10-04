@@ -15,14 +15,27 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'gamenet.db')
+# These get set below
+app.gamenet_ontology_database = None
+app.gamesage_ontology_database = None
+app.ontology_term_id_dictionary = None
+app.ontology_tf_idf_model = None
+app.ontology_lsa_model = None
+app.gamenet_gameplay_database = None
+app.gamesage_gameplay_database = None
+app.gameplay_term_id_dictionary = None
+app.gameplay_tf_idf_model = None
+app.gameplay_lsa_model = None
 db = SQLAlchemy(app)
 
 lm = LoginManager()
 lm.init_app(app)
 
+
 @lm.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -39,10 +52,12 @@ def login():
         return redirect('/gamesage')
     return render_template('login.html', form=form)
 
+
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect('/login')
+
 
 @app.before_request
 def before_request():
@@ -52,7 +67,8 @@ def before_request():
 class LoginForm(Form):
     user_name = StringField('name', validators=[DataRequired()])
 
-#Database Models
+
+# Database Models
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -80,6 +96,7 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User {0} | {1}>".format(self.id, self.user_name)
+
 
 class GameNetGameRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -184,6 +201,7 @@ def icon_click():
 
     return "OK"
 
+
 @app.route('/gamenet/gamenet_link_click', methods=['POST'])
 def game_link_click():
     if current_user.is_authenticated():
@@ -208,9 +226,11 @@ def game_link_click():
         pass
     return "OK"
 
+
 @app.route('/')
 def gamecip_project_home():
     return redirect('http://gamecip.soe.ucsc.edu/projects')
+
 
 @app.route('/gamenet')
 def gamenet_home():
@@ -230,98 +250,186 @@ def gamenet_faq():
     return render_template('gamenet_faq.html')
 
 
-@app.route('/gamenet/findByTitle=<selected_game_title>')
-def render_gamenet_entry_given_game_title(selected_game_title):
-    if any(g for g in app.gamenet_database if g.title.lower() == selected_game_title.lower()):
-        selected_game = next(g for g in app.gamenet_database if g.title.lower() == selected_game_title.lower())
+@app.route('/gamenet/ontology')
+def gamenet_home():
+    """Render the home page of the ontology network."""
+    return render_template('gamenet_index-ontology.html', entered_unknown_game=False)
 
+
+@app.route('/gamenet/ontology/findByTitle=<selected_game_title>')
+def render_gamenet_entry_given_game_title(selected_game_title):
+    if any(game for game in app.gamenet_ontology_database if game.title.lower() == selected_game_title.lower()):
+        selected_game = next(
+            game for game in app.gamenet_ontology_database if game.title.lower() == selected_game_title.lower()
+        )
         if current_user.is_authenticated():
-            gnq = GameNetQuery(user=current_user, ip=request.remote_addr,
-                                        game_query=selected_game_title, game_id=selected_game.id, timestamp=datetime.now())
+            gamenet_query = GameNetQuery(
+                user=current_user, ip=request.remote_addr, game_query=selected_game_title,
+                game_id=selected_game.id, timestamp=datetime.now()
+            )
         else:
-            gnq = GameNetQuery(user=None, ip=request.remote_addr,
-                               game_query=selected_game_title, game_id=selected_game.id, timestamp=datetime.now())
-        db.session.add(gnq)
+            gamenet_query = GameNetQuery(
+                user=None, ip=request.remote_addr, game_query=selected_game_title,
+                game_id=selected_game.id, timestamp=datetime.now()
+            )
+        db.session.add(gamenet_query)
         db.session.commit()
         try:
             if logger:
-                logger.debug(gnq)
+                logger.debug(gamenet_query)
         except NameError:
             pass
-
-        return render_template('game.html', game=selected_game)
+        return render_template('game.html', network='ontology', game=selected_game)
     else:
         # The game title/arbitrary query that the user typed in does not match
         # any game in our database, so keep displaying the home page, but express this
         if current_user.is_authenticated():
-            gnq = GameNetQuery(user=current_user, ip=request.remote_addr,
-                                        game_query=selected_game_title, timestamp=datetime.now())
+            gamenet_query = GameNetQuery(
+                user=current_user, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now()
+            )
         else:
-            gnq = GameNetQuery(user=None, ip=request.remote_addr,
-                               game_query=selected_game_title, timestamp=datetime.now())
-
-        db.session.add(gnq)
+            gamenet_query = GameNetQuery(
+                user=None, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now()
+            )
+        db.session.add(gamenet_query)
         db.session.commit()
         try:
             if logger:
-                logger.debug(gnq)
+                logger.debug(gamenet_query)
         except NameError:
             pass
+        return render_template('gamenet_index-ontology.html', entered_unknown_game=True)
 
 
-        return render_template('gamenet_index.html', entered_unknown_game=True)
-
-
-@app.route('/gamenet/games/<selected_game_id>')
+@app.route('/gamenet/ontology/games/<selected_game_id>')
 def render_gamenet_entry_given_game_id(selected_game_id):
     """Render the GameNet entry for a user-selected game."""
-    selected_game = app.gamenet_database[int(selected_game_id)]
+    selected_game = app.gamenet_ontology_database[int(selected_game_id)]
     if current_user.is_authenticated():
-        gngr = GameNetGameRequest(user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now())
+        gamenet_game_request = GameNetGameRequest(
+            user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
+        )
     else:
-        gngr = GameNetGameRequest(user=None, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now())
-
-    db.session.add(gngr)
+        gamenet_game_request = GameNetGameRequest(
+            user=None, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
+        )
+    db.session.add(gamenet_game_request)
     db.session.commit()
     try:
         if logger:
-            logger.debug(gngr)
+            logger.debug(gamenet_game_request)
     except NameError:
         pass
+    return render_template('game.html', network='ontology', game=selected_game)
 
-    return render_template('game.html', game=selected_game)
+
+@app.route('/gamenet/gameplay')
+def gamenet_home():
+    """Render the home page of the ontology network."""
+    return render_template('gamenet_index-gameplay.html', entered_unknown_game=False)
 
 
-@app.route('/gamenet/game_idea', methods=['POST'])
+@app.route('/gamenet/gameplay/findByTitle=<selected_game_title>')
+def render_gamenet_entry_given_game_title(selected_game_title):
+    if any(game for game in app.gamenet_gameplay_database if game.title.lower() == selected_game_title.lower()):
+        selected_game = next(
+            game for game in app.gamenet_gameplay_database if game.title.lower() == selected_game_title.lower()
+        )
+        if current_user.is_authenticated():
+            gamenet_query = GameNetQuery(
+                user=current_user, ip=request.remote_addr, game_query=selected_game_title,
+                game_id=selected_game.id, timestamp=datetime.now()
+            )
+        else:
+            gamenet_query = GameNetQuery(
+                user=None, ip=request.remote_addr, game_query=selected_game_title,
+                game_id=selected_game.id, timestamp=datetime.now()
+            )
+        db.session.add(gamenet_query)
+        db.session.commit()
+        try:
+            if logger:
+                logger.debug(gamenet_query)
+        except NameError:
+            pass
+        return render_template('game.html', network='gameplay', game=selected_game)
+    else:
+        # The game title/arbitrary query that the user typed in does not match
+        # any game in our database, so keep displaying the home page, but express this
+        if current_user.is_authenticated():
+            gamenet_query = GameNetQuery(
+                user=current_user, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now()
+            )
+        else:
+            gamenet_query = GameNetQuery(
+                user=None, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now()
+            )
+        db.session.add(gamenet_query)
+        db.session.commit()
+        try:
+            if logger:
+                logger.debug(gamenet_query)
+        except NameError:
+            pass
+        return render_template('gamenet_index-gameplay.html', entered_unknown_game=True)
+
+
+@app.route('/gamenet/gameplay/games/<selected_game_id>')
+def render_gamenet_entry_given_game_id(selected_game_id):
+    """Render the GameNet entry for a user-selected game."""
+    # Because we have gaps in the IDs held by all games (unlike in the ontology network,
+    # which has all IDs in the range 0-11828), we have to find the selected game differently
+    selected_game = next(
+        game for game in app.gamenet_gameplay_database if game.id == int(selected_game_id)
+    )
+    if current_user.is_authenticated():
+        gamenet_game_request = GameNetGameRequest(
+            user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
+        )
+    else:
+        gamenet_game_request = GameNetGameRequest(
+            user=None, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
+        )
+    db.session.add(gamenet_game_request)
+    db.session.commit()
+    try:
+        if logger:
+            logger.debug(gamenet_game_request)
+    except NameError:
+        pass
+    return render_template('game.html', network='gameplay', game=selected_game)
+
+
+@app.route('/gamenet/ontology/game_idea', methods=['POST'])
 def generate_gamenet_entry_for_game_idea_from_gamesage():
     """Generate and render a GameNet entry for a GameSage query."""
     idea_text = request.form['user_submitted_text']
     related_games_str = request.form['most_related_games_str']
     unrelated_games_str = request.form['least_related_games_str']
-
     if current_user.is_authenticated():
-        gsq = GameSageQuery(user=current_user, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now())
+        gsq = GameSageQuery(
+            user=current_user, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now()
+        )
     else:
-        gsq = GameSageQuery(user=None, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now())
-
+        gsq = GameSageQuery(
+            user=None, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now()
+        )
     db.session.add(gsq)
     db.session.commit()
-
     try:
         if logger:
             logger.debug(gsq)
     except NameError:
         pass
-
     game_idea = GameIdea(
         idea_text=idea_text, related_games_str=related_games_str, unrelated_games_str=unrelated_games_str
     )
     # Set the title and year of each entry in the game idea's un/related games listings
     for entry in game_idea.related_games+game_idea.unrelated_games:
-        title = app.gamenet_database[int(entry.game_id)].title
-        year = app.gamenet_database[int(entry.game_id)].year
+        title = app.gamenet_ontology_database[int(entry.game_id)].title
+        year = app.gamenet_ontology_database[int(entry.game_id)].year
         entry.set_game_title_and_year(title=title, year=year)
-    return render_template('gameIdea.html', game_idea=game_idea)
+    return render_template('game_idea.html', game_idea=game_idea)
 
 
 @app.route('/gamesage')
@@ -356,12 +464,12 @@ def gamesage_guided_session():
 
 
 @app.route('/gamesage/submittedText', methods=['POST'])
-def generate_gamenet_query():
+def generate_gamenet_ontology_query():
     """Generate a query for GameNet."""
     user_submitted_text = request.form['user_submitted_text']
     gamesage = GameSage(
-        database=app.gamesage_database, term_id_dictionary=app.term_id_dictionary,
-        tf_idf_model=app.tf_idf_model, lsa_model=app.lsa_model,
+        database=app.gamesage_ontology_database, term_id_dictionary=app.ontology_term_id_dictionary,
+        tf_idf_model=app.ontology_tf_idf_model, lsa_model=app.ontology_lsa_model,
         user_submitted_text=user_submitted_text
     )
     return jsonify(
@@ -371,10 +479,10 @@ def generate_gamenet_query():
     )
 
 
-def load_gamenet_database():
+def load_gamenet_ontology_database():
     """Load the database of GameNet game representations from a TSV file."""
     database = []
-    with open('static/games_metadata.tsv', 'r') as tsvfile:
+    with open('static/games_metadata-ontology.tsv', 'r') as tsvfile:
         reader = csv.reader(tsvfile, delimiter='\t')
         for row in reader:
             game_id, title, year, platform, wiki_url, wiki_summary, related_games_str, unrelated_games_str = row
@@ -395,10 +503,10 @@ def load_gamenet_database():
     return database
 
 
-def load_gamesage_database():
+def load_gamesage_ontology_database():
     """Load the database of GameSage game representations from a TSV file."""
     database = []
-    with open('static/game_lsa_vectors.tsv', 'r') as tsv_file:
+    with open('static/game_lsa_vectors-ontology.tsv', 'r') as tsv_file:
         reader = csv.reader(tsv_file, delimiter='\t')
         for row in reader:
             game_id, title, year, lsa_vector_str = row
@@ -407,41 +515,111 @@ def load_gamesage_database():
     return database
 
 
-def load_term_id_dictionary():
+def load_ontology_term_id_dictionary():
     """Load the term-ID dictionary for our corpus."""
-    term_id_dictionary = gensim.corpora.Dictionary.load('./static/id2term.dict')
+    term_id_dictionary = gensim.corpora.Dictionary.load('./static/ontology-id2term.dict')
     return term_id_dictionary
 
 
-def load_tf_idf_model():
+def load_ontology_tf_idf_model():
     """Load our tf-idf model."""
     tf_idf_model = (
-        gensim.models.TfidfModel.load('./static/wiki_games_tfidf_model')
+        gensim.models.TfidfModel.load('./static/ontology-tfidf_model')
     )
     return tf_idf_model
 
 
-def load_lsa_model():
+def load_ontology_lsa_model():
     """Load our LSA model."""
-    lsa_model = gensim.models.LsiModel.load('./static/model_207.lsi')
+    lsa_model = gensim.models.LsiModel.load('./static/ontology-model_207.lsi')
+    return lsa_model
+
+
+def load_gamenet_gameplay_database():
+    """Load the database of GameNet game representations from a TSV file."""
+    database = []
+    with open('static/games_metadata-gameplay.tsv', 'r') as tsvfile:
+        reader = csv.reader(tsvfile, delimiter='\t')
+        for row in reader:
+            game_id, title, year, platform, wiki_url, wiki_summary, related_games_str, unrelated_games_str = row
+            game_object = (
+                GameNetGame(
+                    game_id, title, year, platform, wiki_url,
+                    wiki_summary, related_games_str, unrelated_games_str
+                )
+            )
+            database.append(game_object)
+    # Now that all the games have been read in, allow each game's un/related-games entries to be
+    # attributed game titles and years via lookup into the database that is now fully populated
+    for game in database:
+        for entry in game.related_games+game.unrelated_games:
+            title = database[int(entry.game_id)].title
+            year = database[int(entry.game_id)].year
+            entry.set_game_title_and_year(title=title, year=year)
+    return database
+
+
+def load_gamesage_gameplay_database():
+    """Load the database of GameSage game representations from a TSV file."""
+    database = []
+    with open('static/game_lsa_vectors-gameplay.tsv', 'r') as tsv_file:
+        reader = csv.reader(tsv_file, delimiter='\t')
+        for row in reader:
+            game_id, title, year, lsa_vector_str = row
+            game_object = GameSageGame(game_id, title, lsa_vector_str)
+            database.append(game_object)
+    return database
+
+
+def load_gameplay_term_id_dictionary():
+    """Load the term-ID dictionary for our corpus."""
+    term_id_dictionary = gensim.corpora.Dictionary.load('./static/gameplay-id2term.dict')
+    return term_id_dictionary
+
+
+def load_gameplay_tf_idf_model():
+    """Load our tf-idf model."""
+    tf_idf_model = (
+        gensim.models.TfidfModel.load('./static/gameplay-tfidf_model')
+    )
+    return tf_idf_model
+
+
+def load_gameplay_lsa_model():
+    """Load our LSA model."""
+    lsa_model = gensim.models.LsiModel.load('./static/gameplay-model_207.lsi')
     return lsa_model
 
 
 if __name__ == '__main__':
     app.secret_key = 'super secret key'
-    app.gamenet_database = load_gamenet_database()
-    app.gamesage_database = load_gamesage_database()
-    app.term_id_dictionary = load_term_id_dictionary()
-    app.tf_idf_model = load_tf_idf_model()
-    app.lsa_model = load_lsa_model()
+    # Prepare the ontology network (i.e., tools as fueled by Wikipedia corpus)
+    app.gamenet_ontology_database = load_gamenet_ontology_database()
+    app.gamesage_ontology_database = load_gamesage_ontology_database()
+    app.ontology_term_id_dictionary = load_ontology_term_id_dictionary()
+    app.ontology_tf_idf_model = load_ontology_tf_idf_model()
+    app.ontology_lsa_model = load_ontology_lsa_model()
+    # Prepare the gameplay network (i.e., tools as fueled by GameFAQs corpus)
+    app.gamenet_gameplay_database = load_gamenet_gameplay_database()
+    app.gamesage_gameplay_database = load_gamesage_gameplay_database()
+    app.gameplay_term_id_dictionary = load_gameplay_term_id_dictionary()
+    app.gameplay_tf_idf_model = load_gameplay_tf_idf_model()
+    app.gameplay_lsa_model = load_gameplay_lsa_model()
     app.run(debug=False)
 else:
     app.secret_key = 'super secret key'
-    app.gamenet_database = load_gamenet_database()
-    app.gamesage_database = load_gamesage_database()
-    app.term_id_dictionary = load_term_id_dictionary()
-    app.tf_idf_model = load_tf_idf_model()
-    app.lsa_model = load_lsa_model()
+    # Prepare the ontology network (i.e., tools as fueled by Wikipedia corpus)
+    app.gamenet_ontology_database = load_gamenet_ontology_database()
+    app.gamesage_ontology_database = load_gamesage_ontology_database()
+    app.ontology_term_id_dictionary = load_ontology_term_id_dictionary()
+    app.ontology_tf_idf_model = load_ontology_tf_idf_model()
+    app.ontology_lsa_model = load_ontology_lsa_model()
+    # Prepare the gameplay network (i.e., tools as fueled by GameFAQs corpus)
+    app.gamenet_gameplay_database = load_gamenet_gameplay_database()
+    app.gamesage_gameplay_database = load_gamesage_gameplay_database()
+    app.gameplay_term_id_dictionary = load_gameplay_term_id_dictionary()
+    app.gameplay_tf_idf_model = load_gameplay_tf_idf_model()
+    app.gameplay_lsa_model = load_gameplay_lsa_model()
 
 if not app.debug:
     import logging

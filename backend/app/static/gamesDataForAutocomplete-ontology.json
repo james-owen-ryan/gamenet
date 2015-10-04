@@ -35,6 +35,7 @@ var games_list = [
   {"label" : "Street Racer (1977)", "id" : "33"},
   {"label" : "Triple Hunt", "id" : "34"},
   {"label" : "Zork", "id" : "35"},
+  {"label" : "Zork", "id": "35"},
   {"label" : "3-D Docking Mission", "id" : "36"},
   {"label" : "Adventureland", "id" : "37"},
   {"label" : "Brain Games", "id" : "38"},

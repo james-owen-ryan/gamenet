@@ -173,7 +173,7 @@
   {% for entry in game_idea.related_games %}
       <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
         <div class=relatedAndUnrelatedGamesLink>
-          <a href="/gamenet/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+          <a href="/gamenet/ontology/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
         </div>
       </div>
   {% endfor %}
@@ -183,7 +183,10 @@
 	Disparate Games
   </div>
   <div class=relatedAndUnrelatedGamesSummary>
-  	These are the 50 most <i>un</i>related games to the one you described. Click to navigate to a game's GameNet entry, unless you'd like to <a href="/gamenet" style="color: #FF5500">start from another existing game</a>. Color indicates how unrelated a linked game is:
+  	These are the 50 most <i>un</i>related games to the one you described.
+    Click to navigate to a game's GameNet entry, unless you'd like to
+    <a href="/gamenet" style="color: #FF5500">start from another existing game</a>. Color
+    indicates how unrelated a linked game is:
   </div>
   <div class="relatedAndUnrelatedGamesColorKey">
   	<span style="color:white; background-color:#004CE6">&nbsp;extremely </span>
@@ -194,7 +197,7 @@
   {% for entry in game_idea.unrelated_games %}
     <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
       <div class=relatedAndUnrelatedGamesLink>
-        <a href="/gamenet/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+        <a href="/gamenet/ontology/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
       </div>
     </div>
   {% endfor %}

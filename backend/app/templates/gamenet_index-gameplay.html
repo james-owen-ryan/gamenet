@@ -91,39 +91,6 @@
       .ui-helper-hidden-accessible {
         display:none;
       }
-      .button input[type="button"] {
-        color:white;
-        font-family: 'Josefin Sans', sans-serif;
-        font-weight: 100;
-        font-size: 90%;
-        padding: 8px;
-        line-height: 100%;
-        width: 290px;
-        background-color: #FF5500;
-        border: none;
-        -moz-border-radius: 0px;
-        -webkit-border-radius: 0px;
-        border-radius: 0px;
-        border-bottom: 0px solid white;
-        -moz-box-shadow: none;
-        -webkit-box-shadow: none;
-        box-shadow: none;
-        cursor: pointer;
-        display: block;
-      }
-      .button input[type="button"]:hover {
-        // background-color:#D0F4F6;
-        color:black;
-      }
-      .leftButton {
-        display:table-cell;
-        padding-right:22px;
-      }
-      .rightButton {
-        height:100%;
-        display:table-cell;
-        padding-left:22px;
-      }
     </style>
   </head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
@@ -141,28 +108,70 @@
   <br><br>
   <!-- Display prompt text -->
   <div class=prompt id="prompt">
-    Which network would you like to explore?<br><br>
+    {% if entered_unknown_game %}
+      That game is not included in the gameplay network.<br>Please enter a different title or else visit
+      <a href="/gamesage"><font color="#FF5500"> GameSage</a></font> to generate an entry for this game.<br><br>
+    {% else %}
+      Which game do you want to start at?<br><br>
+    {% endif %}
   </div>
-  <div class="leftButton">
-    <div class="button" id="ontologyButton">
-        <input type="button" value=" ONTOLOGY " onClick="location.href='/gamenet/ontology'">
+  <script type="application/javascript" src="{{ url_for('static', filename = 'gamesDataForAutocomplete-gameplay.json') }}" charset="utf-8"></script>
+    <!-- Requires jQuery -->
+    <div class="searcher"><center>
+      <b>
+        <input id="tags" type="text" placeholder="" name="code",
+        style="width: 600px; height: 40px; border: 0; background: #EEEEEE; text-align: center">
+        <script>
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            $(document).ready(function() {
+                $(function() {
+                    $("#tags").autocomplete({
+                        maxResults: 5,
+                        source: function(request, response) {
+                            var results = $.ui.autocomplete.filter(games_list, request.term);
+                            response(results.slice(0, this.options.maxResults));
+                        },
+                        focus: function(event, ui) {
+                            // prevent autocomplete from updating the textbox
+                            event.preventDefault();
+                            // manually update the textbox
+                            $(this).val(ui.item.label);
+                        },
+                        select: function(event, ui) {
+                            // prevent autocomplete from updating the textbox
+                            event.preventDefault();
+                            // manually update the textbox and hidden field
+                            var selectedGameID = ui.item.id;
+                            // generate a page for the selected game
+                            window.location = '/gamenet/gameplay/games/' + selectedGameID
+                        }
+                    });
+                    // Handle Enter keypress event
+                    $('#tags').on('keypress', function(e) {
+                        if (e.which == 13 && $(this).val()) {
+                          window.location = '/gamenet/gameplay/findByTitle=' + $(this).val();
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+        $("input.submit").click(function(e){
+            $.post( "/save", {name: $("input.name").val(), time: "2pm"});
+        });
+        </script>
+    </b>
     </div>
-  </div>
-  <div class="rightButton">
-    <div class="button" id="mechanicsButton">
-        <input type="button" value=" GAMEPLAY " onClick="location.href='/gamenet/gameplay'">
+    <br>
+    <br>
+    <div class="footer">
+        <a href="/gamenet/about">About</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="/gamenet/faq">FAQ</a>
     </div>
-  </div>
-  <br>
-  <br>
-  <div class="footer">
-      <a href="/gamenet/about">About</a>
-      &nbsp;&nbsp;&nbsp;
-      <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>
-      &nbsp;&nbsp;&nbsp;
-      <a href="/gamenet/faq">FAQ</a>
-  </div>
-</center>
+  </center>
   <!-- Google Analytics Snippet -->
   <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
