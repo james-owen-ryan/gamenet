@@ -3,18 +3,18 @@ import os
 import gensim
 from datetime import datetime
 from flask import Flask, render_template, jsonify, request, redirect, g
-# from flask.ext.sqlalchemy import SQLAlchemy
-# from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
-# from flask_wtf import Form
-# from wtforms import StringField
-# from wtforms.validators import DataRequired
+from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_wtf import Form
+from wtforms import StringField
+from wtforms.validators import DataRequired
 from gamesage import GameSage
 from game import GameNetGame, GameSageGame, GameIdea
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'gamenet.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'gamenet.db')
 # These get set below
 app.gamenet_ontology_database = None
 app.gamesage_ontology_database = None
@@ -26,205 +26,205 @@ app.gamesage_gameplay_database = None
 app.gameplay_term_id_dictionary = None
 app.gameplay_tf_idf_model = None
 app.gameplay_lsa_model = None
-# db = SQLAlchemy(app)
-#
-# lm = LoginManager()
-# lm.init_app(app)
+db = SQLAlchemy(app)
+
+lm = LoginManager()
+lm.init_app(app)
 
 
-# @lm.user_loader
-# def load_user(user_id):
-#     return User.query.get(int(user_id))
-#
-#
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         user = User.query.filter_by(user_name=form.user_name.data).first()
-#         if not user:
-#             user = User(user_name=form.user_name.data)
-#             db.session.add(user)
-#             db.session.commit()
-#
-#         login_user(user)
-#
-#         return redirect('/gamesage')
-#     return render_template('login.html', form=form)
-#
-#
-# @app.route('/logout')
-# def logout():
-#     logout_user()
-#     return redirect('/login')
-#
-#
-# @app.before_request
-# def before_request():
-#     g.user = current_user
-#
-#
-# class LoginForm(Form):
-#     user_name = StringField('name', validators=[DataRequired()])
-#
-#
-# # Database Models
-#
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_name = db.Column(db.String(64))
-#     game_net_requests = db.relationship('GameNetGameRequest', backref='user', lazy='dynamic')
-#     icon_clicks = db.relationship('IconClick', backref='user', lazy='dynamic')
-#     game_sage_queries = db.relationship('GameSageQuery', backref='user', lazy='dynamic')
-#     game_net_queries = db.relationship('GameNetQuery', backref='user', lazy='dynamic')
-#     game_net_link_clicks = db.relationship('GameNetLinkClick', backref='user', lazy='dynamic')
-#
-#     def is_authenticated(self):
-#         return True
-#
-#     def is_active(self):
-#         return True
-#
-#     def is_anonymous(self):
-#         return False
-#
-#     def get_id(self):
-#         try:
-#             return unicode(self.id)
-#         except NameError:
-#             return str(self.id)
-#
-#     def __repr__(self):
-#         return "<User {0} | {1}>".format(self.id, self.user_name)
-#
-#
-# class GameNetGameRequest(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     ip = db.Column(db.String(16))
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     timestamp = db.Column(db.DateTime)
-#     game_id = db.Column(db.Integer)
-#
-#     def __repr__(self):
-#         return "<GameNetGameRequest {0} | {1} | {2} | {3} | {4} >".format(self.id,
-#                                                                           self.ip,
-#                                                                           self.user_id,
-#                                                                           self.timestamp,
-#                                                                           self.game_id)
-#
-#
-# class GameNetQuery(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     ip = db.Column(db.String(16))
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     timestamp = db.Column(db.DateTime)
-#     game_query = db.Column(db.String(255))
-#     game_id = db.Column(db.Integer)
-#
-#     def __repr__(self):
-#         return "<GameNetQuery {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
-#                                                                     self.ip,
-#                                                                     self.user_id,
-#                                                                     self.timestamp,
-#                                                                     self.game_query,
-#                                                                     self.game_id)
-#
-#
-# class IconClick(db.Model):
-#     WIKI = 'wikipedia'
-#     YOUTUBE = 'youtube'
-#     GOOGLE = 'google'
-#
-#     id = db.Column(db.Integer, primary_key=True)
-#     ip = db.Column(db.String(16))
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     timestamp = db.Column(db.DateTime)
-#     icon_type = db.Column(db.String(9))
-#     game_id = db.Column(db.Integer)
-#
-#     def __repr__(self):
-#         return "<IconClick {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
-#                                                                        self.ip,
-#                                                                        self.user_id,
-#                                                                        self.timestamp,
-#                                                                        self.icon_type,
-#                                                                        self.game_id)
-#
-#
-# class GameNetLinkClick(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     ip = db.Column(db.String(16))
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     timestamp = db.Column(db.DateTime)
-#     game_source_id = db.Column(db.Integer)
-#     game_dest_id = db.Column(db.Integer)
-#
-#     def __repr__(self):
-#         return "<GameNetLinkClick {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
-#                                                                               self.ip,
-#                                                                               self.user_id,
-#                                                                               self.timestamp,
-#                                                                               self.game_source_id,
-#                                                                               self.game_dest_id)
-#
-#
-# class GameSageQuery(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     ip = db.Column(db.String(16))
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-#     timestamp = db.Column(db.DateTime)
-#     game_sage_query = db.Column(db.PickleType)
-#
-#     def __repr__(self):
-#         return "<GameSageQuery {0} | {1} | {2} | {3} | {4} >".format(self.id,
-#                                                                      self.ip,
-#                                                                      self.user_id,
-#                                                                      self.timestamp,
-#                                                                      self.game_sage_query)
-#
-#
-# @app.route('/gamenet/icon_click', methods=['POST'])
-# def icon_click():
-#     if current_user.is_authenticated():
-#         ic = IconClick(user=current_user, ip=request.remote_addr,
-#                                  timestamp=datetime.now(), icon_type=request.form['icon_type'], game_id=request.form['game_id'])
-#     else:
-#         ic = IconClick(user=None, ip=request.remote_addr,
-#                        timestamp=datetime.now(), icon_type=request.form['icon_type'], game_id=request.form['game_id'])
-#     db.session.add(ic)
-#     db.session.commit()
-#     try:
-#         if logger:
-#             logger.debug(ic)
-#     except NameError:
-#         pass
-#
-#     return "OK"
-#
-#
-# @app.route('/gamenet/gamenet_link_click', methods=['POST'])
-# def game_link_click():
-#     if current_user.is_authenticated():
-#         gl = GameNetLinkClick(user=current_user,
-#                               ip=request.remote_addr,
-#                               timestamp=datetime.now(),
-#                               game_source_id=request.form['game_source_id'],
-#                               game_dest_id=request.form['game_dest_id'])
-#     else:
-#         gl = GameNetLinkClick(user=None,
-#                               ip=request.remote_addr,
-#                               timestamp=datetime.now(),
-#                               game_source_id=request.form['game_source_id'],
-#                               game_dest_id=request.form['game_dest_id'])
-#
-#     db.session.add(gl)
-#     db.session.commit()
-#     try:
-#         if logger:
-#             logger.debug(gl)
-#     except NameError:
-#         pass
-#     return "OK"
+@lm.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(user_name=form.user_name.data).first()
+        if not user:
+            user = User(user_name=form.user_name.data)
+            db.session.add(user)
+            db.session.commit()
+
+        login_user(user)
+
+        return redirect('/gamesage')
+    return render_template('login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect('/login')
+
+
+@app.before_request
+def before_request():
+    g.user = current_user
+
+
+class LoginForm(Form):
+    user_name = StringField('name', validators=[DataRequired()])
+
+
+# Database Models
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(64))
+    game_net_requests = db.relationship('GameNetGameRequest', backref='user', lazy='dynamic')
+    icon_clicks = db.relationship('IconClick', backref='user', lazy='dynamic')
+    game_sage_queries = db.relationship('GameSageQuery', backref='user', lazy='dynamic')
+    game_net_queries = db.relationship('GameNetQuery', backref='user', lazy='dynamic')
+    game_net_link_clicks = db.relationship('GameNetLinkClick', backref='user', lazy='dynamic')
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        try:
+            return unicode(self.id)
+        except NameError:
+            return str(self.id)
+
+    def __repr__(self):
+        return "<User {0} | {1}>".format(self.id, self.user_name)
+
+
+class GameNetGameRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(16))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    game_id = db.Column(db.Integer)
+
+    def __repr__(self):
+        return "<GameNetGameRequest {0} | {1} | {2} | {3} | {4} >".format(self.id,
+                                                                          self.ip,
+                                                                          self.user_id,
+                                                                          self.timestamp,
+                                                                          self.game_id)
+
+
+class GameNetQuery(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(16))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    game_query = db.Column(db.String(255))
+    game_id = db.Column(db.Integer)
+
+    def __repr__(self):
+        return "<GameNetQuery {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
+                                                                    self.ip,
+                                                                    self.user_id,
+                                                                    self.timestamp,
+                                                                    self.game_query,
+                                                                    self.game_id)
+
+
+class IconClick(db.Model):
+    WIKI = 'wikipedia'
+    YOUTUBE = 'youtube'
+    GOOGLE = 'google'
+
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(16))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    icon_type = db.Column(db.String(9))
+    game_id = db.Column(db.Integer)
+
+    def __repr__(self):
+        return "<IconClick {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
+                                                                       self.ip,
+                                                                       self.user_id,
+                                                                       self.timestamp,
+                                                                       self.icon_type,
+                                                                       self.game_id)
+
+
+class GameNetLinkClick(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(16))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    game_source_id = db.Column(db.Integer)
+    game_dest_id = db.Column(db.Integer)
+
+    def __repr__(self):
+        return "<GameNetLinkClick {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
+                                                                              self.ip,
+                                                                              self.user_id,
+                                                                              self.timestamp,
+                                                                              self.game_source_id,
+                                                                              self.game_dest_id)
+
+
+class GameSageQuery(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(16))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.DateTime)
+    game_sage_query = db.Column(db.PickleType)
+
+    def __repr__(self):
+        return "<GameSageQuery {0} | {1} | {2} | {3} | {4} >".format(self.id,
+                                                                     self.ip,
+                                                                     self.user_id,
+                                                                     self.timestamp,
+                                                                     self.game_sage_query)
+
+
+@app.route('/gamenet/icon_click', methods=['POST'])
+def icon_click():
+    if current_user.is_authenticated():
+        ic = IconClick(user=current_user, ip=request.remote_addr,
+                                 timestamp=datetime.now(), icon_type=request.form['icon_type'], game_id=request.form['game_id'])
+    else:
+        ic = IconClick(user=None, ip=request.remote_addr,
+                       timestamp=datetime.now(), icon_type=request.form['icon_type'], game_id=request.form['game_id'])
+    db.session.add(ic)
+    db.session.commit()
+    try:
+        if logger:
+            logger.debug(ic)
+    except NameError:
+        pass
+
+    return "OK"
+
+
+@app.route('/gamenet/gamenet_link_click', methods=['POST'])
+def game_link_click():
+    if current_user.is_authenticated():
+        gl = GameNetLinkClick(user=current_user,
+                              ip=request.remote_addr,
+                              timestamp=datetime.now(),
+                              game_source_id=request.form['game_source_id'],
+                              game_dest_id=request.form['game_dest_id'])
+    else:
+        gl = GameNetLinkClick(user=None,
+                              ip=request.remote_addr,
+                              timestamp=datetime.now(),
+                              game_source_id=request.form['game_source_id'],
+                              game_dest_id=request.form['game_dest_id'])
+
+    db.session.add(gl)
+    db.session.commit()
+    try:
+        if logger:
+            logger.debug(gl)
+    except NameError:
+        pass
+    return "OK"
 
 
 @app.route('/')
