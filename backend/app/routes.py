@@ -380,7 +380,7 @@ def render_gamenet_entry_given_game_id_gameplay(selected_game_id):
     # Because we have gaps in the IDs held by all games (unlike in the ontology network,
     # which has all IDs in the range 0-11828), we have to find the selected game differently
     selected_game = next(
-        game for game in app.gamenet_gameplay_database if game.id == int(selected_game_id)
+        game for game in app.gamenet_gameplay_database if int(game.id) == int(selected_game_id)
     )
     if current_user.is_authenticated():
         gamenet_game_request = GameNetGameRequest(
