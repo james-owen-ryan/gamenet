@@ -553,8 +553,11 @@ def load_gamenet_gameplay_database():
     # attributed game titles and years via lookup into the database that is now fully populated
     for game in database:
         for entry in game.related_games+game.unrelated_games:
-            title = database[int(entry.game_id)].title
-            year = database[int(entry.game_id)].year
+            game_object_of_that_entry = next(
+                game for game in database if int(game.id) == int(entry.game_id)
+            )
+            title = game_object_of_that_entry.title
+            year = game_object_of_that_entry.year
             entry.set_game_title_and_year(title=title, year=year)
     return database
 
