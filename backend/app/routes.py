@@ -26,8 +26,8 @@ app.gamesage_gameplay_database = None
 app.gameplay_term_id_dictionary = None
 app.gameplay_tf_idf_model = None
 app.gameplay_lsa_model = None
-db = SQLAlchemy(app)
 
+db = SQLAlchemy(app)
 lm = LoginManager()
 lm.init_app(app)
 
