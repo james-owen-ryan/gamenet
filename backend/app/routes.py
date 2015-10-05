@@ -379,9 +379,7 @@ def render_gamenet_entry_given_game_id_gameplay(selected_game_id):
     """Render the GameNet entry for a user-selected game."""
     # Because we have gaps in the IDs held by all games (unlike in the ontology network,
     # which has all IDs in the range 0-11828), we have to find the selected game differently
-    selected_game = next(
-        game for game in app.gamenet_gameplay_database if int(game.id) == int(selected_game_id)
-    )
+    selected_game = app.gamenet_gameplay_database[int(selected_game_id)]
     if current_user.is_authenticated():
         gamenet_game_request = GameNetGameRequest(
             user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
@@ -548,14 +546,17 @@ def load_gamenet_gameplay_database():
                     wiki_summary, related_games_str, unrelated_games_str
                 )
             )
+            # Append a bunch of None entries so that games are indexed by their
+            # IDs, which allows fast accessing
+            while len(database) < int(game_id):
+                database.append(None)
+            # Now can append the game_object at the index matching its game_id
             database.append(game_object)
     # Now that all the games have been read in, allow each game's un/related-games entries to be
     # attributed game titles and years via lookup into the database that is now fully populated
-    for game in database:
+    for game in [game for game in database if game]:
         for entry in game.related_games+game.unrelated_games:
-            game_object_of_that_entry = next(
-                game for game in database if int(game.id) == int(entry.game_id)
-            )
+            game_object_of_that_entry = database[int(entry.game_id)]
             title = game_object_of_that_entry.title
             year = game_object_of_that_entry.year
             entry.set_game_title_and_year(title=title, year=year)
