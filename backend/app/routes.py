@@ -331,9 +331,12 @@ def gamenet_home_gameplay():
 
 @app.route('/gamenet/gameplay/findByTitle=<selected_game_title>')
 def render_gamenet_entry_given_game_title_gameplay(selected_game_title):
-    if any(game for game in app.gamenet_gameplay_database if game.title.lower() == selected_game_title.lower()):
+    if any(game for game in app.gamenet_gameplay_database if game and
+            # Have to watch out for all the None filler entries in gameplay database
+            game.title.lower() == selected_game_title.lower()):
         selected_game = next(
-            game for game in app.gamenet_gameplay_database if game.title.lower() == selected_game_title.lower()
+            game for game in app.gamenet_gameplay_database if game and
+            game.title.lower() == selected_game_title.lower()
         )
         if current_user.is_authenticated():
             gamenet_query = GameNetQuery(
