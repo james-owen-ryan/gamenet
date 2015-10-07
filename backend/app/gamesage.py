@@ -1,18 +1,24 @@
 import string
 import gensim
 from nltk import WordNetLemmatizer
+from nltk import word_tokenize
+from nltk import HunposTagger
 
 
 class GameSage(object):
     """An anthropomorphization of the procedure in LSA called 'folding in'."""
 
-    def __init__(self, database, term_id_dictionary, tf_idf_model, lsa_model, user_submitted_text):
+    def __init__(self, network, database, term_id_dictionary, tf_idf_model, lsa_model, user_submitted_text):
         """Initialize a GameSage object."""
+        self.network = network
         self.database = database
         self.term_id_dictionary = term_id_dictionary
         self.tf_idf_model = tf_idf_model
         self.lsa_model = lsa_model
-        preprocessed_text = self._preprocess_text(text=user_submitted_text)
+        if self.network == 'ontology':
+            preprocessed_text = self._preprocess_text_in_ontology_network_style(text=user_submitted_text)
+        else:  # 'gameplay'
+            preprocessed_text = self._preprocess_text_in_gameplay_network_style(text=user_submitted_text)
         lsa_vector_for_user_submitted_text = self._fold_in_user_submitted_text(text=preprocessed_text)
         self.most_related_games, self.least_related_games = self._get_most_related_games_to_user_submitted_text(
             lsa_vector_for_user_submitted_text=lsa_vector_for_user_submitted_text
@@ -66,8 +72,8 @@ class GameSage(object):
         lsa_vector_for_user_submitted_text = document_lsa_vector_for_user_submitted_text[1:]
         return lsa_vector_for_user_submitted_text
 
-    def _preprocess_text(self, text):
-        """Preprocess user-submitted text in the same way we preprocessed our corpus."""
+    def _preprocess_text_in_ontology_network_style(self, text):
+        """Preprocess user-submitted text in the same way we preprocessed the Wikipedia corpus."""
         # Remove weird characters that could cause encoding issues
         text = filter(lambda char: char in string.printable, text)
         # Remove newline and tab characters
@@ -88,12 +94,12 @@ class GameSage(object):
         # Again remove redundant whitespace
         text = ' '.join(text.split())
         # Remove stopwords
-        text = self._remove_stopwords(text=text)
+        text = self._remove_stopwords_ontology(text=text)
         # Lemmatize words
         text = self._lemmatize_words(text=text)
         # Remove stopwords again (some may have been reintroduced
         # by lemmatization)
-        text = self._remove_stopwords(text=text)
+        text = self._remove_stopwords_ontology(text=text)
         return text
 
     def _tokenize_multiword_titles(self, text):
@@ -143,18 +149,20 @@ class GameSage(object):
     def _remove_punctuation_and_symbols(text):
         """Remove punctuation and other symbols."""
         for symbol in (
-            '[', ']', '\'', '"', ':', '&', '(', ')', '\\', '/', '*', '!',
+            '[', ']', '\'', '&', '(', ')', '\\', '/', '*', '!',
             '?', '$', '^', '~', '+', '=', '{', '}', '`', '|', '#'
         ):
             text = text.replace(symbol, ' ')
+        for symbol in ('"', ':'):
+            text = text.replace(symbol, '')
         return text
 
     @staticmethod
-    def _remove_stopwords(text):
+    def _remove_stopwords_ontology(text):
         """Remove all stopwords from the text."""
         f = open('./static/stopwords.txt', 'r')
         stopwords = f.readlines()
-        stopwords = (stopword.strip('\n') for stopword in stopwords)
+        stopwords = [stopword.strip('\n') for stopword in stopwords]
         tokens = [token.lower() for token in text.split()]
         for i in xrange(len(tokens)):
             if tokens[i] in stopwords:
@@ -184,3 +192,123 @@ class GameSage(object):
                     pass
         text = ' '.join(tokens)
         return text
+
+    def _preprocess_text_in_gameplay_network_style(self, text):
+        """Preprocess user-submitted text in the same way we preprocessed the GameFAQs corpus."""
+        # Remove weird characters that could cause encoding issues
+        text = filter(lambda char: char in string.printable, text)
+        # Remove newline and tab characters
+        for special_char in ('\n', '\r', '\t'):
+            text = text.replace(special_char, '. ')
+        # Remove most punctuation and symbols
+        text = self._remove_punctuation_and_symbols(text=text)
+        # POS-tag the text
+        pos_tagged_text = self._pos_tag_text(text=text)
+        # Remove all tokens that aren't POS-tagged as a verb or common noun
+        pos_tagged_text = self._remove_everything_but_verbs_and_common_nouns(pos_tagged_text)
+        # Convert text to lowercase
+        for i in xrange(len(pos_tagged_text)):
+            pos_tagged_text[i][0] == pos_tagged_text[i][0].lower()
+        # Remove numbers and non-Latin characters
+        pos_tagged_text = self._remove_any_numbers_and_non_english_characters_from_text(
+            pos_tagged_text=pos_tagged_text
+        )
+        # Lemmatize, and remove stopwords
+        pos_tagged_text = self._lemmatize_and_remove_stopwords(
+            pos_tagged_text=pos_tagged_text
+        )
+        # Throw away the POS tags
+        text = [tag[0] for tag in pos_tagged_text]
+        text = ' '.join(text)
+        # Remove redundant whitespace
+        text = ' '.join(text.split())
+        return text
+
+    @staticmethod
+    def _pos_tag_text(text):
+        tokens = word_tokenize(text)
+        # Prepare the POS tagger
+        pos_tagger = HunposTagger('./static/en_wsj.model', './static/hunpos-tag')
+        # POS-tag the text
+        pos_tagged_text = pos_tagger.tag(tokens)
+        # Convert each word-tag tuple to a list, to support item assignment, which
+        # we need during lemmatization and stopword removal
+        pos_tagged_text = [list(t) for t in pos_tagged_text]
+        return pos_tagged_text
+
+    @staticmethod
+    def _remove_everything_but_verbs_and_common_nouns(pos_tagged_text):
+        """Remove everything but verbs and common nouns from the POS-tagged text."""
+        pos_tagged_text = [
+            word_and_tag_pair for word_and_tag_pair in pos_tagged_text if word_and_tag_pair[0] != '' and
+            word_and_tag_pair[1] in ('VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'NN', 'NNS')
+        ]
+        return pos_tagged_text
+
+    @staticmethod
+    def _remove_any_numbers_and_non_english_characters_from_text(pos_tagged_text):
+        """Remove any digits from the POS-tagged text."""
+        for i in xrange(len(pos_tagged_text)):
+            # Remove numbers
+            word = pos_tagged_text[i][0]
+            word = word.translate(None, string.digits)
+            # Remove words with non-Latin characters
+            try:
+                word.decode('ascii')
+            except UnicodeDecodeError:
+                word = ''
+            # Write the preprocessed word back
+            pos_tagged_text[i][0] = word
+        return pos_tagged_text
+
+    @staticmethod
+    def _remove_all_other_punctuation(pos_tagged_text):
+        """Remove all remaining punctuation from POS-tagged text."""
+        for j in xrange(len(pos_tagged_text)):
+            word = pos_tagged_text[j][0]
+            for symbol in (',', '.', ';', '-'):
+                word = word.replace(symbol, ' ')
+            # Write the preprocessed word back
+            pos_tagged_text[j][0] = word
+        return pos_tagged_text
+
+    @staticmethod
+    def _lemmatize_and_remove_stopwords(pos_tagged_text):
+        """Lemmatize the pos_tagged_text and remove any stopwords."""
+        # Prepare lemmatizer
+        lemmatizer = WordNetLemmatizer()
+        lemmatizations_already_computed = {}
+        penn_to_wordnet_pos_tags = {
+            'NN': 'n', 'NNS': 'n', 'VB': 'v', 'VBD': 'v', 'VBG': 'v',  'VBN': 'v', 'VBP': 'v',
+            'VBZ': 'v', 'JJ': 'a', 'JJR': 'a', 'JJS': 'a', 'RB': 'r', 'RBR': 'r', 'RBS': 'r',
+        }
+        # Build stopwords list
+        f = open('./static/stopwords.txt', 'r')
+        stopwords = f.readlines()
+        stopwords = [stopword.strip('\n') for stopword in stopwords]
+        contractions_missed_because_of_punctuation_removal = [
+            'arent', 'cant', 'couldnt', 'didnt', 'doesnt', 'dont', 'hadnt', 'hasnt', 'havent',
+            'hed', 'hell', 'hes', 'id', 'ill', 'im', 'ive', 'isnt', 'its', 'lets', 'mightnt', 'mustnt',
+            'shant', 'shed', 'shell', 'shes', 'shouldnt', 'thats', 'theres', 'theyd', 'theyll', 'theyre',
+            'theyve', 'wed', 'were', 'weve', 'werent', 'whatll', 'whatre', 'whats', 'whatve', 'wheres',
+            'whod', 'wholl', 'whore', 'whos', 'whove', 'wont', 'wouldnt',  'youd', 'youll', 'youre', 'youve'
+        ]
+        stopwords += contractions_missed_because_of_punctuation_removal
+        # Run the lemmatization procedure multiple times to be safe (problem
+        # when, e.g., 'apples apples' shows up)
+        for i in xrange(5):
+            for j in xrange(len(pos_tagged_text)):
+                word, pos_tag = pos_tagged_text[j]
+                if word != '':
+                    # Lemmatize word
+                    if word in lemmatizations_already_computed:
+                        pos_tagged_text[j][0] = lemmatizations_already_computed[word]
+                    else:
+                        lemmatizations_already_computed[word] = lemmatizer.lemmatize(
+                            word=word, pos=penn_to_wordnet_pos_tags[pos_tag]
+                        )
+                        pos_tagged_text[j][0] = lemmatizations_already_computed[word]
+                    # If it's a stopword (or unicharacter symbol), remove it
+                    if pos_tagged_text[j][0] in stopwords or len(pos_tagged_text[j][0]) == 1:
+                        pos_tagged_text[j][0] = ''
+        return pos_tagged_text
