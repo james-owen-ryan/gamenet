@@ -1,4 +1,5 @@
 import string
+import csv
 import gensim
 from nltk import WordNetLemmatizer
 from nltk import word_tokenize
@@ -29,13 +30,33 @@ class GameSage(object):
 
     def _generate_related_games_strings(self):
         """Generate strings representing the most and least related games, for GameNet to parse."""
-        most_related_games_str = (
-            ','.join('{}&{}'.format(entry[0], entry[1]) for entry in self.most_related_games)
-        )
-        least_related_games_str = (
-            ','.join('{}&{}'.format(entry[0], entry[1]) for entry in self.least_related_games)
-        )
+        if self.network == 'gameplay':
+            id_mapping = self._build_gameplay_database_indices_to_game_id_mapping()
+            most_related_games_str = (
+                ','.join('{}&{}'.format(id_mapping[entry[0]], entry[1]) for entry in self.most_related_games)
+            )
+            least_related_games_str = (
+                ','.join('{}&{}'.format(id_mapping[entry[0]], entry[1]) for entry in self.least_related_games)
+            )
+        else:  # 'ontology'
+            most_related_games_str = (
+                ','.join('{}&{}'.format(entry[0], entry[1]) for entry in self.most_related_games)
+            )
+            least_related_games_str = (
+                ','.join('{}&{}'.format(entry[0], entry[1]) for entry in self.least_related_games)
+            )
         return most_related_games_str, least_related_games_str
+
+    @staticmethod
+    def _build_gameplay_database_indices_to_game_id_mapping():
+        """Build a mapping from 'gameplay' database indices to game IDs."""
+        gameplay_database_index_to_game_id = {}
+        with open('static/games_metadata-gameplay.tsv', 'r') as tsvfile:
+            metadata_entries = [line.split('\t') for line in tsvfile.readlines()]
+            for i in xrange(len(metadata_entries)):
+                game_id = metadata_entries[i][0]
+                gameplay_database_index_to_game_id[i] = game_id
+        return gameplay_database_index_to_game_id
 
     def _get_most_related_games_to_user_submitted_text(self, lsa_vector_for_user_submitted_text):
         """Get the 50 most related and unrelated games to the user-submitted text."""
@@ -47,7 +68,7 @@ class GameSage(object):
         reindexed_lsa_space = gensim.similarities.docsim.Similarity(
             output_prefix="temp_gensim_lsa_file_that_can_be_deleted",
             corpus=corpus_including_new_lsa_vector,
-            num_features=207, num_best=len(corpus_including_new_lsa_vector)
+            num_features=len(self.database[0].lsa_vector)+1, num_best=len(corpus_including_new_lsa_vector)
         )
         lsa_scores_for_all_games_relative_to_this_game = (
             reindexed_lsa_space[lsa_vector_for_user_submitted_text]
@@ -249,9 +270,10 @@ class GameSage(object):
     def _remove_any_numbers_and_non_english_characters_from_text(pos_tagged_text):
         """Remove any digits from the POS-tagged text."""
         for i in xrange(len(pos_tagged_text)):
-            # Remove numbers
             word = pos_tagged_text[i][0]
-            word = word.translate(None, string.digits)
+            # Remove numbers
+            for digit in string.digits:
+                word = word.replace(digit, '')
             # Remove words with non-Latin characters
             try:
                 word.decode('ascii')

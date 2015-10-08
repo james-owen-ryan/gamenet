@@ -173,7 +173,7 @@
   {% for entry in game_idea.related_games %}
       <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
         <div class=relatedAndUnrelatedGamesLink>
-          <a href="/gamenet/ontology/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+          <a href="/gamenet/{{ network }}/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
         </div>
       </div>
   {% endfor %}
@@ -197,7 +197,7 @@
   {% for entry in game_idea.unrelated_games %}
     <div class=relatedAndUnrelatedGamesEntry style="background-color: {{ entry.background_color }}">
       <div class=relatedAndUnrelatedGamesLink>
-        <a href="/gamenet/ontology/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
+        <a href="/gamenet/{{ network }}/games/{{ entry.game_id }}">{{ entry.game_title }} ({{ entry.game_year }})</a>
       </div>
     </div>
   {% endfor %}
