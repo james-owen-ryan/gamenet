@@ -661,7 +661,7 @@ if __name__ == '__main__':
     app.gameplay_term_id_dictionary = load_gameplay_term_id_dictionary()
     app.gameplay_tf_idf_model = load_gameplay_tf_idf_model()
     app.gameplay_lsa_model = load_gameplay_lsa_model()
-    app.run(debug=True)
+    app.run(debug=False)
 else:
     app.secret_key = 'super secret key'
     # Prepare the ontology network (i.e., tools as fueled by Wikipedia corpus)
