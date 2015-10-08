@@ -1,9 +1,8 @@
 import string
-import csv
 import gensim
 from nltk import WordNetLemmatizer
-from nltk import word_tokenize
-from nltk import HunposTagger
+# from nltk import word_tokenize
+# from nltk import HunposTagger
 
 
 class GameSage(object):
