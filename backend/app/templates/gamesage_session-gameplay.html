@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <title>GameSage</title>
+    <title>GameSage | Session</title>
     <! -- Load Google font -->
     <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:100,300' rel='stylesheet' type='text/css'>
     <! -- Load favicon and other icons -->
@@ -38,9 +38,10 @@
     <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <style>
       .prompt {
+        float: middle;
         font-family: 'Josefin Sans', sans-serif;
         font-weight: 100;
-        font-size: 46px;
+        font-size: 32px;
         text-align: center;
         width: 85%;
       }
@@ -49,7 +50,8 @@
         font-size: 48px;
         text-align: center;
         padding-top: 5px;
-        width: 85%;
+        width: 65%;
+        cursor: pointer;
       }
       textarea {
         font-family: 'Josefin Sans', sans-serif;
@@ -62,8 +64,16 @@
         border-style: solid;
         border-width: 0px;
         width: 55%;
-        height: 180px;
+        height: 200px;
         text-align: center;
+      }
+      .charsRemaining {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 100;
+        font-size: 32px;
+        text-align: center;
+        width: 85%;
+        color: white;
       }
       a:link {
         color: black;
@@ -86,39 +96,111 @@
         font-weight: 300;
         font-size: 24px;
       }
+      .button input[type="button"] {
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        color:white;
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
+        font-size: 90%;
+        padding: 8px;
+        background-color: #FF5500;
+        border: none;
+        -moz-border-radius: 0px;
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+        border-bottom: 0px solid white;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        cursor: pointer;
+        display: block;
+        -webkit-appearance: none;  // Suppresses weird rendering on mobile
+      }
+      .button input[type="button"]:hover {
+        // background-color:#D0F4F6;
+        color:black;
+        -webkit-appearance: none;  // Suppresses weird rendering on mobile
+      }
     </style>
   </head>
 
   <body><center>
   <div class=prompt id="prompt">
-    I am GameSage.<br>Click me once you are ready to begin.<br>
+    Tell me anything and everything about your game idea.<br>Click me once you've done this.
   </div>
-    <form name="gameSageForm" id="gameSageForm" method="post" action="/gamesage/session">
-      <input type="hidden" name="idea_text_to_be_refined" value="">
+  <div class="button" id="button">
+      <input type="button" value="GUIDE ME" onClick="location.href='/gamesage/session/guided'">
+  </div>
+    <!-- Prepare form that will be sent via POST to GameNet to generate an entry -->
+    <form name="gameNetForm" method="post" action="/gamenet/gameplay/game_idea">
+      <input type="hidden" name="user_submitted_text" value="">
+      <input type="hidden" name="most_related_games_str" value="gameNetQuery.most_related_games_str">
+      <input type="hidden" name="least_related_games_str" value="gameNetQuery.least_related_games_str">
     </form>
-  <div class="gameSageImage"><img onclick="beginSession()" src="{{ url_for('static', filename = 'the_gamesage.png') }}" alt="" id="gameSageImage" style="width:72%"></div>
-  <div class=prompt id="textBox">
+  <div class="gameSageImage">
+      <img onclick="getUserSubmittedText()" src="{{ url_for('static', filename = 'the_gamesage.png') }}" alt="" id="gameSageImage" style="width:72%">
   </div>
-  <br><br>
+  <div class=prompt id="textBox">
+      <textarea type="text" id="userSubmittedText">{{ idea_text_to_be_refined }}</textarea>
+  </div>
   <script>
-    function beginSession() {
-        // Submit form with empty string for idea_text_to_be_refined, which gets
-        // used by gamesage/session to fill in the text a person already submitted in
-        // the case that they want to refine it
-        document.getElementById("gameSageForm").submit();
+    var numCharsRequired = 250;
+    $('textarea').keyup(function() {
+       var charsRemaining = numCharsRequired - $(this).val().length;
+       if (charsRemaining > 0) {
+         $('#characters').text(charsRemaining);
+       }
+       else {
+         $('#characters').text('');
+       }
+    });
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    function goToGeneratedGameNetEntry(gameNetQuery) {
+      // Update the form that we will use to store the data
+      // that GameNet needs to generate an entry for this game idea
+      formObject = document.forms['gameNetForm'];
+      formObject.elements["user_submitted_text"].value = gameNetQuery.user_submitted_text;
+      formObject.elements["most_related_games_str"].value = gameNetQuery.most_related_games_str;
+      formObject.elements["least_related_games_str"].value = gameNetQuery.least_related_games_str;
+      // Submit the updated form via POST
+      formObject.submit();
+    }
+    function getUserSubmittedText() {
+      var numCharactersSubmitted = document.getElementById("userSubmittedText").value.length;
+      if (numCharactersSubmitted < numCharsRequired) {
+        currentPrompt = document.getElementById("prompt").innerHTML;
+        if (currentPrompt == "Please, say a little more about this game.<br><br>") {
+          document.getElementById("prompt").innerHTML = "You'll have to say a little more about this game.<br><br>"
+        }
+        else {
+          document.getElementById("prompt").innerHTML = "Please, say a little more about this game.<br><br>"
+        }
+        // Make characters remaining visible
+        document.getElementById("characters").style.color = "black";
+      }
+      else {
+        // Time to submit
+        var submittedText = document.getElementById("userSubmittedText").value;
+        // Change this gameSage to the thinking image
+        document.getElementById("gameSageImage").src = "{{ url_for('static', filename = 'the_gamesage_thinking.png') }}";
+        document.getElementById("prompt").innerHTML = "Okay, that is all I need to know.<br>Now, please, let me think for a moment.";
+        document.getElementById("button").innerHTML = "";
+        // Remove the text-input box
+        document.getElementById("textBox").innerHTML = "";
+        // Get JSON of generated GameNet query back from Flask (do this by submitting a form with
+        // the user's submitted game idea via POST) [this url needs to be changed to /submittedText to test
+        // this app locally]
+        $.post("/gamesage/gameplay/submittedText", { user_submitted_text : submittedText }, function(data) {
+          goToGeneratedGameNetEntry(mostRelatedGame=data);
+        }, "json");
+      }
     }
   </script>
   </div>
-      <br>
-  <div class="footer" id="footer">
-    <a href="/gamesage/about">About</a>
-    &nbsp;&nbsp;&nbsp;
-    <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>
-    &nbsp;&nbsp;&nbsp;
-    <a href="/gamesage/faq">FAQ</a>
-  </div>
+  <div class=charsRemaining id="characters"></div>
 </center>
-</body>
   <!-- Google Analytics Snippet -->
   <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -130,4 +212,5 @@
       ga('send', 'pageview');
 
   </script>
+</body>
 </html>

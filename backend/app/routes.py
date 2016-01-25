@@ -467,7 +467,19 @@ def generate_gamenet_gameplay_entry_for_game_idea_from_gamesage():
 @app.route('/gamesage')
 def gamesage_home():
     """Render the GameSage homepage."""
-    return render_template('gamesage_index.html')
+    return render_template('gamesage_index-ontology.html')
+
+
+@app.route('/gamesage/ontology')
+def gamesage_home_ontology():
+    """Render the GameSage homepage."""
+    return render_template('gamesage_index-ontology.html')
+
+
+@app.route('/gamesage/gameplay')
+def gamesage_home_gameplay():
+    """Render the GameSage homepage."""
+    return render_template('gamesage_index-gameplay.html')
 
 
 @app.route('/gamesage/about')
@@ -482,11 +494,18 @@ def gamesage_faq():
     return render_template('gamesage_faq.html')
 
 
-@app.route('/gamesage/session', methods=['POST'])
-def gamesage_session():
+@app.route('/gamesage/ontology/session', methods=['POST'])
+def gamesage_session_ontology():
     """Render a GameSage session page."""
     idea_text_to_be_refined = request.form['idea_text_to_be_refined']
-    return render_template('gamesage_session.html', idea_text_to_be_refined=idea_text_to_be_refined)
+    return render_template('gamesage_session-ontology.html', idea_text_to_be_refined=idea_text_to_be_refined)
+
+
+@app.route('/gamesage/gameplay/session', methods=['POST'])
+def gamesage_session_gameplay():
+    """Render a GameSage session page."""
+    idea_text_to_be_refined = request.form['idea_text_to_be_refined']
+    return render_template('gamesage_session-gameplay.html', idea_text_to_be_refined=idea_text_to_be_refined)
 
 
 @app.route('/gamesage/session/guided')

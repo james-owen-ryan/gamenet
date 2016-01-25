@@ -144,7 +144,7 @@
   <div class=gameTitle>
     [the game you described]
   </div>
-  <form name="gameSageForm" id="gameSageForm" method="post" action="/gamesage/session">
+  <form name="gameSageForm" id="gameSageForm" method="post" action="/gamesage/{{ network }}/session">
     <input type="hidden" name="idea_text_to_be_refined" value="{{ game_idea.idea_text }}">
   </form>
   <hr noshade="" color="black" ;="" size="1" width="78%">
@@ -213,7 +213,7 @@
   <script>
     function reviseDescription() {
         // Submit form with game_idea.text for idea_text_to_be_refined, which gets
-        // used by gamesage/session to fill in the text a person already submitted
+        // used by gamesage/{{ network }}/session to fill in the text a person already submitted
         // so that they may refine it
         document.getElementById("gameSageForm").submit();
     }
