@@ -467,6 +467,9 @@ def generate_gamenet_gameplay_entry_for_game_idea_from_gamesage():
 @app.route('/gamesage')
 def gamesage_home():
     """Render the GameSage homepage."""
+    # TODO MAKE THIS GO TO gamesage_index.html (AND MAKE THAT TEMPLATE,
+    # MAKING SURE THAT IT ALLOWS SELECTION BETWEEN THE NETWORKS)
+    # return render_template('gamesage_index.html')
     return render_template('gamesage_index-ontology.html')
 
 
@@ -702,4 +705,3 @@ if not app.debug:
     logger = logging.getLogger('app_info')
     logger.setLevel(logging.DEBUG)
     logger.addHandler(RotatingFileHandler('gamenet_actions.log', maxBytes=1024 * 1024 * 10, backupCount=20))
-
