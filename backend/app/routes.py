@@ -232,10 +232,10 @@ def gamecip_project_home():
     return redirect('http://gamecip.soe.ucsc.edu/projects')
 
 
-@app.route('/gamenet')
-def gamenet_home():
-    """Render the GameNet homepage."""
-    return render_template('gamenet_index.html', entered_unknown_game=False)
+# @app.route('/gamenet')
+# def gamenet_home():
+#     """Render the GameNet homepage."""
+#     return render_template('gamenet_index.html', entered_unknown_game=False)
 
 
 @app.route('/gamenet/about')
@@ -464,13 +464,13 @@ def generate_gamenet_gameplay_entry_for_game_idea_from_gamesage():
     return render_template('game_idea.html', network='gameplay', game_idea=game_idea)
 
 
-@app.route('/gamesage')
-def gamesage_home():
-    """Render the GameSage homepage."""
-    # TODO MAKE THIS GO TO gamesage_index.html (AND MAKE THAT TEMPLATE,
-    # MAKING SURE THAT IT ALLOWS SELECTION BETWEEN THE NETWORKS)
-    # return render_template('gamesage_index.html')
-    return render_template('gamesage_index-ontology.html')
+# @app.route('/gamesage')
+# def gamesage_home():
+#     """Render the GameSage homepage."""
+#     # TODO MAKE THIS GO TO gamesage_index.html (AND MAKE THAT TEMPLATE,
+#     # MAKING SURE THAT IT ALLOWS SELECTION BETWEEN THE NETWORKS)
+#     # return render_template('gamesage_index.html')
+#     return render_template('gamesage_index-ontology.html')
 
 
 @app.route('/gamesage/ontology')

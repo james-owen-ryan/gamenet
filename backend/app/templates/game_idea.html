@@ -133,9 +133,9 @@
   </head>
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <center>
-  <!-- Display Gamenet logo as a link back to the home page -->
+  <!-- Display Gamenet logo as a link back to the portal of the network they're already on -->
   <div class=goBack>
-    <a href='/gamenet'>
+    <a href='/gamenet/{{ network }}'>
       <img border="0" alt="GameNet" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="30">
     </a>
   </div>
@@ -202,13 +202,13 @@
     </div>
   {% endfor %}
   <br>
-    <div class="footer">
-        <a href="/gamenet/about">About</a>
-        &nbsp;&nbsp;&nbsp;
-        <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>
-        &nbsp;&nbsp;&nbsp;
-        <a href="/gamenet/faq">FAQ</a>
-    </div>
+    <!--<div class="footer">-->
+        <!--<a href="/gamenet/about">About</a>-->
+        <!--&nbsp;&nbsp;&nbsp;-->
+        <!--<a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>-->
+        <!--&nbsp;&nbsp;&nbsp;-->
+        <!--<a href="/gamenet/faq">FAQ</a>-->
+    <!--</div>-->
   </center>
   <script>
     function reviseDescription() {
