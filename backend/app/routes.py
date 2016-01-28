@@ -237,6 +237,11 @@ def gamecip_project_home():
 #     """Render the GameNet homepage."""
 #     return render_template('gamenet_index.html', entered_unknown_game=False)
 
+@app.route('/gamenet/example')
+def gamenet_home_example():
+    """Render the example home page for the HOG user study."""
+    return render_template('gamenet_example.html', entered_unknown_game=False)
+
 
 @app.route('/gamenet/about')
 def gamenet_about():

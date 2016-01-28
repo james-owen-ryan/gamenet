@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>GameNet</title>
+    <!-- Load Google font -->
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:100,300' rel='stylesheet' type='text/css'>
+    <!-- Load favicon and other icons -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'gamenet-favicon.ico') }}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-iphone-60x60.png') }}" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-ipad-76x76.png') }}" />
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-iphone-retina-120x120.png') }}" />
+    <link rel="apple-touch-icon" sizes="144x144" href="{{ url_for('static', filename = 'gamenet-apple-touch-icon-ipad-retina-152x152.png') }}" />
+    <!-- Load jQuery -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <style>
+      body {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
+        font-size: 48px;
+      }
+      .footer {
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
+        font-size: 24px;
+      }
+      a:link {
+        color: black;
+        text-decoration: none;
+      }
+      a:visited {
+        color: black;
+        text-decoration: none;
+      }
+      a:hover {
+        color: #FF5500;
+        text-decoration: none;
+      }
+      a:active {
+        color: black;
+        text-decoration: none;
+      }
+      .prompt {
+        width: 75%;
+        font-weight: 100;
+      }
+      input[type='text'] {
+        font-family: 'Josefin Sans', sans-serif;
+        font-size: 24px;
+      }
+      .ui-autocomplete {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        float: center;
+        display: none;
+        min-width: 160px;
+        /*max-width: 400px;*/
+        padding: 6px 0;
+        margin: 0 0 10px 25px;
+        list-style: none;
+        background-color: #FF5500;
+        border-color: #ccc;
+        border-color: white;
+        border-style: solid;
+        border-width: 0px;
+        -webkit-border-radius: 0px;
+        -moz-border-radius: 0px;
+        border-radius: 0px;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        -webkit-background-clip: padding-box;
+        -moz-background-clip: padding;
+        background-clip: padding-box;
+        *border-right-width: 0px;
+        *border-bottom-width: 0px;
+        text-align: center;
+      }
+      .ui-state-hover, .ui-autocomplete li:hover {
+        color:black;
+      }
+      .ui-menu .ui-menu-item {
+        background:#FF5500;
+        height:30px;
+        font-size:24px;
+        color:white;
+      }
+      .ui-helper-hidden-accessible {
+        display:none;
+      }
+      .button input[type="button"] {
+        color:black;
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
+        font-size: 90%;
+        padding: 8px;
+        line-height: 100%;
+        width: 290px;
+        background-color: #EEEEEE;
+        border: none;
+        -moz-border-radius: 30px;
+        -webkit-border-radius: 30px;
+        border-radius: 30px;
+        border-bottom: 0px solid white;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        cursor: pointer;
+        display: block;
+        padding-top:15px;
+        -webkit-appearance: none;  // Suppresses weird rendering on mobile
+      }
+      .button input[type="button"]:hover {
+        color:black;
+        -webkit-appearance: none;  // Suppresses weird rendering on mobile
+      }
+    </style>
+  </head>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+  <center>
+  <br>
+  <!-- Display header -->
+  <div class="button" id="ontologyButton"
+       title="This network comprises 11,829 games that are linked according to many ontological concerns, such as gameplay, platform, developer, critical reception, and more.">
+      <input type="button" value="          " onClick="location.href='/gamenet/ontology'">
+  </div>
+  <br>
+  <!-- Display Gamenet logo [as link back to this page, to emphasize this affordance] -->
+  <a href='/gamenet/ontology'>
+    <img border="0" alt="Go back" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="150px">
+  </a>
+  <br><br>
+  <!-- Display prompt text -->
+  <div class=prompt id="prompt">
+    {% if entered_unknown_game %}
+      That game is not included in this network.<br>Please enter a different title or else visit
+      <a href="/gamesage"><font color="#FF5500"> GameSage</a></font> to generate an entry for this game.<br><br>
+    {% else %}
+      Which game do you want to start at?<br><br>
+    {% endif %}
+  </div>
+  <script type="application/javascript" src="{{ url_for('static', filename = 'gamesDataForAutocomplete-ontology.json') }}" charset="utf-8"></script>
+    <!-- Requires jQuery -->
+    <div class="searcher"><center>
+      <b>
+        <input id="tags" type="text" placeholder="" name="code",
+        style="width: 600px; height: 40px; border: 0; background: #EEEEEE; text-align: center">
+        <script>
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            $(document).ready(function() {
+                $(function() {
+                    $("#tags").autocomplete({
+                        maxResults: 5,
+                        source: function(request, response) {
+                            var results = $.ui.autocomplete.filter(games_list, request.term);
+                            response(results.slice(0, this.options.maxResults));
+                        },
+                        focus: function(event, ui) {
+                            // prevent autocomplete from updating the textbox
+                            event.preventDefault();
+                            // manually update the textbox
+                            $(this).val(ui.item.label);
+                        },
+                        select: function(event, ui) {
+                            // prevent autocomplete from updating the textbox
+                            event.preventDefault();
+                            // manually update the textbox and hidden field
+                            var selectedGameID = ui.item.id;
+                            // generate a page for the selected game
+                            window.location = '/gamenet/ontology/games/' + selectedGameID
+                        }
+                    });
+                    // Handle Enter keypress event
+                    $('#tags').on('keypress', function(e) {
+                        if (e.which == 13 && $(this).val()) {
+                          window.location = '/gamenet/ontology/findByTitle=' + $(this).val();
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+        $("input.submit").click(function(e){
+            $.post( "/save", {name: $("input.name").val(), time: "2pm"});
+        });
+        </script>
+    </b>
+    </div>
+    <br>
+    <br>
+    <!--<div class="footer">-->
+        <!--<a href="/gamenet/about">About</a>-->
+        <!--&nbsp;&nbsp;&nbsp;-->
+        <!--<a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>-->
+        <!--&nbsp;&nbsp;&nbsp;-->
+        <!--<a href="/gamenet/faq">FAQ</a>-->
+    <!--</div>-->
+  </center>
+  <!-- Google Analytics Snippet -->
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-64301562-1', 'auto');
+      ga('send', 'pageview');
+
+  </script>
+</html>
