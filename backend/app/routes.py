@@ -243,6 +243,12 @@ def gamenet_home_example():
     return render_template('gamenet_example.html', entered_unknown_game=False)
 
 
+@app.route('/gamesage/example')
+def gamesage_home_example():
+    """Render the example home page for the HOG user study."""
+    return render_template('gamesage_index-ontology.html', entered_unknown_game=False)
+
+
 @app.route('/gamenet/about')
 def gamenet_about():
     """Render the about page."""
