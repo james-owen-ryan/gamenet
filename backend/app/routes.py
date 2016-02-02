@@ -39,18 +39,20 @@ def load_user(user_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(user_name=form.user_name.data).first()
-        if not user:
-            user = User(user_name=form.user_name.data)
-            db.session.add(user)
-            db.session.commit()
+    if not current_user.is_authenticated():
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = User.query.filter_by(user_name=form.user_name.data).first()
+            if not user:
+                user = User(user_name=form.user_name.data)
+                db.session.add(user)
+                db.session.commit()
 
-        login_user(user)
+            login_user(user)
 
-        return redirect('/gamesage')
-    return render_template('login.html', form=form)
+            return redirect('/')
+        return render_template('login.html', form=form)
+    return redirect('/')
 
 
 @app.route('/logout')
@@ -95,7 +97,7 @@ class User(db.Model):
             return str(self.id)
 
     def __repr__(self):
-        return "<User {0} | {1}>".format(self.id, self.user_name)
+        return "<User {} | {}>".format(self.id, self.user_name)
 
 
 class GameNetGameRequest(db.Model):
@@ -104,13 +106,11 @@ class GameNetGameRequest(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime)
     game_id = db.Column(db.Integer)
+    network = db.Column(db.String)
 
     def __repr__(self):
-        return "<GameNetGameRequest {0} | {1} | {2} | {3} | {4} >".format(self.id,
-                                                                          self.ip,
-                                                                          self.user_id,
-                                                                          self.timestamp,
-                                                                          self.game_id)
+        return "<GameNetGameRequest {} | {} | {} | {} | {} | {} >".format(self.id, self.ip, self.user_id, 
+                                                                          self.timestamp, self.game_id, self.network)
 
 
 class GameNetQuery(db.Model):
@@ -120,14 +120,11 @@ class GameNetQuery(db.Model):
     timestamp = db.Column(db.DateTime)
     game_query = db.Column(db.String(255))
     game_id = db.Column(db.Integer)
+    network = db.Column(db.String)
 
     def __repr__(self):
-        return "<GameNetQuery {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
-                                                                    self.ip,
-                                                                    self.user_id,
-                                                                    self.timestamp,
-                                                                    self.game_query,
-                                                                    self.game_id)
+        return "<GameNetQuery {} | {} | {} | {} | {} | {} | {} >".format(self.id, self.ip, self.user_id, self.timestamp,
+                                                                         self.game_query, self.game_id, self.network)
 
 
 class IconClick(db.Model):
@@ -141,14 +138,11 @@ class IconClick(db.Model):
     timestamp = db.Column(db.DateTime)
     icon_type = db.Column(db.String(9))
     game_id = db.Column(db.Integer)
+    network = db.Column(db.String)
 
     def __repr__(self):
-        return "<IconClick {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
-                                                                       self.ip,
-                                                                       self.user_id,
-                                                                       self.timestamp,
-                                                                       self.icon_type,
-                                                                       self.game_id)
+        return "<IconClick {} | {} | {} | {} | {} | {} | {} >".format(self.id, self.ip, self.user_id, self.timestamp,
+                                                                      self.icon_type, self.game_id, self.network)
 
 
 class GameNetLinkClick(db.Model):
@@ -158,14 +152,11 @@ class GameNetLinkClick(db.Model):
     timestamp = db.Column(db.DateTime)
     game_source_id = db.Column(db.Integer)
     game_dest_id = db.Column(db.Integer)
+    network = db.Column(db.String)
 
     def __repr__(self):
-        return "<GameNetLinkClick {0} | {1} | {2} | {3} | {4} | {5} >".format(self.id,
-                                                                              self.ip,
-                                                                              self.user_id,
-                                                                              self.timestamp,
-                                                                              self.game_source_id,
-                                                                              self.game_dest_id)
+        return "<GameNetLinkClick {} | {} | {} | {} | {} | {} | {} >".format(self.id, self.ip, self.user_id, self.timestamp,
+                                                                             self.game_source_id, self.game_dest_id, self.network)
 
 
 class GameSageQuery(db.Model):
@@ -174,23 +165,22 @@ class GameSageQuery(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime)
     game_sage_query = db.Column(db.PickleType)
+    network = db.Column(db.String)
 
     def __repr__(self):
-        return "<GameSageQuery {0} | {1} | {2} | {3} | {4} >".format(self.id,
-                                                                     self.ip,
-                                                                     self.user_id,
-                                                                     self.timestamp,
-                                                                     self.game_sage_query)
+        return "<GameSageQuery {} | {} | {} | {} | {} | {} >".format(self.id, self.ip, self.user_id, self.timestamp, 
+                                                                     self.game_sage_query, self.network)
 
 
 @app.route('/gamenet/icon_click', methods=['POST'])
 def icon_click():
     if current_user.is_authenticated():
-        ic = IconClick(user=current_user, ip=request.remote_addr,
-                                 timestamp=datetime.now(), icon_type=request.form['icon_type'], game_id=request.form['game_id'])
+        ic = IconClick(user=current_user, ip=request.remote_addr, timestamp=datetime.now(),
+                       icon_type=request.form['icon_type'], game_id=request.form['game_id'],
+                       network=request.form['network'])
     else:
-        ic = IconClick(user=None, ip=request.remote_addr,
-                       timestamp=datetime.now(), icon_type=request.form['icon_type'], game_id=request.form['game_id'])
+        ic = IconClick(user=None, ip=request.remote_addr, timestamp=datetime.now(), icon_type=request.form['icon_type'],
+                       game_id=request.form['game_id'], network=request.form['network'])
     db.session.add(ic)
     db.session.commit()
     try:
@@ -209,13 +199,15 @@ def game_link_click():
                               ip=request.remote_addr,
                               timestamp=datetime.now(),
                               game_source_id=request.form['game_source_id'],
-                              game_dest_id=request.form['game_dest_id'])
+                              game_dest_id=request.form['game_dest_id'],
+                              network=request.form['network'])
     else:
         gl = GameNetLinkClick(user=None,
                               ip=request.remote_addr,
                               timestamp=datetime.now(),
                               game_source_id=request.form['game_source_id'],
-                              game_dest_id=request.form['game_dest_id'])
+                              game_dest_id=request.form['game_dest_id'],
+                              network=request.form['network'])
 
     db.session.add(gl)
     db.session.commit()
@@ -229,7 +221,10 @@ def game_link_click():
 
 @app.route('/')
 def gamecip_project_home():
-    return redirect('http://gamecip.soe.ucsc.edu/projects')
+    if current_user.is_authenticated():
+        return "You are now logged in as: {}".format(current_user.user_name)
+    else:
+        return "You are not currently logged in."
 
 
 # @app.route('/gamenet')
@@ -276,12 +271,12 @@ def render_gamenet_entry_given_game_title_ontology(selected_game_title):
         if current_user.is_authenticated():
             gamenet_query = GameNetQuery(
                 user=current_user, ip=request.remote_addr, game_query=selected_game_title,
-                game_id=selected_game.id, timestamp=datetime.now()
+                game_id=selected_game.id, timestamp=datetime.now(), network='ontology'
             )
         else:
             gamenet_query = GameNetQuery(
                 user=None, ip=request.remote_addr, game_query=selected_game_title,
-                game_id=selected_game.id, timestamp=datetime.now()
+                game_id=selected_game.id, timestamp=datetime.now(), network='ontology'
             )
         db.session.add(gamenet_query)
         db.session.commit()
@@ -296,11 +291,13 @@ def render_gamenet_entry_given_game_title_ontology(selected_game_title):
         # any game in our database, so keep displaying the home page, but express this
         if current_user.is_authenticated():
             gamenet_query = GameNetQuery(
-                user=current_user, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now()
+                user=current_user, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now(),
+                network='ontology'
             )
         else:
             gamenet_query = GameNetQuery(
-                user=None, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now()
+                user=None, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now(),
+                network='ontology'
             )
         db.session.add(gamenet_query)
         db.session.commit()
@@ -318,11 +315,13 @@ def render_gamenet_entry_given_game_id_ontology(selected_game_id):
     selected_game = app.gamenet_ontology_database[int(selected_game_id)]
     if current_user.is_authenticated():
         gamenet_game_request = GameNetGameRequest(
-            user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
+            user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now(),
+            network='ontology'
         )
     else:
         gamenet_game_request = GameNetGameRequest(
-            user=None, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
+            user=None, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now(),
+            network='ontology'
         )
     db.session.add(gamenet_game_request)
     db.session.commit()
@@ -352,12 +351,12 @@ def render_gamenet_entry_given_game_title_gameplay(selected_game_title):
         if current_user.is_authenticated():
             gamenet_query = GameNetQuery(
                 user=current_user, ip=request.remote_addr, game_query=selected_game_title,
-                game_id=selected_game.id, timestamp=datetime.now()
+                game_id=selected_game.id, timestamp=datetime.now(), network='gameplay'
             )
         else:
             gamenet_query = GameNetQuery(
                 user=None, ip=request.remote_addr, game_query=selected_game_title,
-                game_id=selected_game.id, timestamp=datetime.now()
+                game_id=selected_game.id, timestamp=datetime.now(), network='gameplay'
             )
         db.session.add(gamenet_query)
         db.session.commit()
@@ -372,11 +371,13 @@ def render_gamenet_entry_given_game_title_gameplay(selected_game_title):
         # any game in our database, so keep displaying the home page, but express this
         if current_user.is_authenticated():
             gamenet_query = GameNetQuery(
-                user=current_user, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now()
+                user=current_user, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now(),
+                network='gameplay'
             )
         else:
             gamenet_query = GameNetQuery(
-                user=None, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now()
+                user=None, ip=request.remote_addr, game_query=selected_game_title, timestamp=datetime.now(),
+                network='gameplay'
             )
         db.session.add(gamenet_query)
         db.session.commit()
@@ -396,11 +397,13 @@ def render_gamenet_entry_given_game_id_gameplay(selected_game_id):
     selected_game = app.gamenet_gameplay_database[int(selected_game_id)]
     if current_user.is_authenticated():
         gamenet_game_request = GameNetGameRequest(
-            user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
+            user=current_user, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now(),
+            network='gameplay'
         )
     else:
         gamenet_game_request = GameNetGameRequest(
-            user=None, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now()
+            user=None, ip=request.remote_addr, game_id=selected_game_id, timestamp=datetime.now(),
+            network='gameplay'
         )
     db.session.add(gamenet_game_request)
     db.session.commit()
@@ -420,11 +423,13 @@ def generate_gamenet_ontology_entry_for_game_idea_from_gamesage():
     unrelated_games_str = request.form['least_related_games_str']
     if current_user.is_authenticated():
         gsq = GameSageQuery(
-            user=current_user, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now()
+            user=current_user, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now(),
+            network='ontology'
         )
     else:
         gsq = GameSageQuery(
-            user=None, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now()
+            user=None, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now(),
+            network='ontology'
         )
     db.session.add(gsq)
     db.session.commit()
@@ -451,11 +456,13 @@ def generate_gamenet_gameplay_entry_for_game_idea_from_gamesage():
     unrelated_games_str = request.form['least_related_games_str']
     if current_user.is_authenticated():
         gsq = GameSageQuery(
-            user=current_user, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now()
+            user=current_user, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now(),
+            network='gameplay'
         )
     else:
         gsq = GameSageQuery(
-            user=None, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now()
+            user=None, game_sage_query=idea_text, ip=request.remote_addr, timestamp=datetime.now(),
+            network='gameplay'
         )
     db.session.add(gsq)
     db.session.commit()

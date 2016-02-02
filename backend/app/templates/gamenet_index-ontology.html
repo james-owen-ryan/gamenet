@@ -122,6 +122,9 @@
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <center>
   <br>
+      {% if current_user.is_authenticated() %}
+          <div style="font-size: 20px;" id="user" data-id="{{ current_user.id }}">Logged in as: {{ current_user.user_name }}</div>
+      {% endif %}
   <!-- Display header -->
   <div class="button" id="ontologyButton"
        title="This network comprises 11,829 games that are linked according to many ontological concerns, such as gameplay, platform, developer, critical reception, and more.">

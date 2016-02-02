@@ -138,6 +138,9 @@
     <a href='/gamenet/{{ network }}'>
       <img border="0" alt="GameNet" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="30">
     </a>
+      {% if current_user.is_authenticated() %}
+          <div id="user" data-id="{{ current_user.id }}">Logged in as: {{ current_user.user_name }}</div>
+      {% endif %}
   </div>
   <!-- Title and year of release -->
   <hr noshade="" color="black" ;="" size="1" width="78%">

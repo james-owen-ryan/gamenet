@@ -122,6 +122,9 @@
   <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
   <center>
   <br>
+  {% if current_user.is_authenticated() %}
+      <div style="font-size: 20px;" id="user" data-id="{{ current_user.id }}">Logged in as: {{ current_user.user_name }}</div>
+  {% endif %}
   <!-- Display header -->
   <div class="button" id="gameplayButton"
     title="This network comprises 5,739 games that are linked according to gameplay concerns only.">
