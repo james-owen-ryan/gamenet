@@ -90,6 +90,9 @@
   </head>
 
   <body><center>
+      {% if current_user.is_authenticated() %}
+          <div style="font-size: 20px;" id="user" data-id="{{ current_user.id }}">Logged in as: {{ current_user.user_name }}</div>
+      {% endif %}
   <div class=prompt id="prompt">
     I am GameSage.<br>Click me once you are ready to begin.<br>
   </div>
