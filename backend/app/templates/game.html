@@ -108,7 +108,7 @@
   <center>
   <!-- Display Gamenet logo as a link back to the home page -->
   <div class=goBack>
-    <a href='/gamenet/{{ network }}'>
+    <a href='/gamenet'>
       <img border="0" alt="GameNet" src={{ url_for('static', filename = 'gamenet_logo.png') }} height="30">
     </a>
       {% if current_user.is_authenticated() %}
@@ -149,7 +149,7 @@
   	Related Games
   </div>
   <div class=relatedAndUnrelatedGamesSummary>
-  	Here are the 50 most related games to {{ game.title }}. Click to navigate to a new game, unless you want to <a href="/gamenet/{{ network }}" style="color: #FF5500">start from a new game</a>. Color indicates how related a linked game is:
+  	Here are the 50 most related games to {{ game.title }}. Click to navigate to a new game, unless you want to <a href="/gamenet" style="color: #FF5500">start from a new game</a>. Color indicates how related a linked game is:
   </div>
   <div class="relatedAndUnrelatedGamesColorKey">
   	<span style="color:white; background-color:#E64C00">&nbsp;extremely </span>
@@ -170,7 +170,7 @@
 	Disparate Games
   </div>
   <div class=relatedAndUnrelatedGamesSummary>
-  	These are the 50 most <i>un</i>related games to {{ game.title }}. Click to navigate to a new game, unless you want to <a href="/gamenet/{{ network }}" style="color: #FF5500">start from a new game</a>. Color indicates how unrelated a linked game is:
+  	These are the 50 most <i>un</i>related games to {{ game.title }}. Click to navigate to a new game, unless you want to <a href="/gamenet" style="color: #FF5500">start from a new game</a>. Color indicates how unrelated a linked game is:
   </div>
   <div class="relatedAndUnrelatedGamesColorKey">
   	<span style="color:white; background-color:#004CE6">&nbsp;extremely </span>
@@ -186,13 +186,13 @@
     </div>
   {% endfor %}
   <br>
-    <!--<div class="footer">-->
-        <!--<a href="/gamenet/about">About</a>-->
-        <!--&nbsp;&nbsp;&nbsp;-->
-        <!--<a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>-->
-        <!--&nbsp;&nbsp;&nbsp;-->
-        <!--<a href="/gamenet/faq">FAQ</a>-->
-    <!--</div>-->
+    <div class="footer">
+        <a href="/gamenet/about">About</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="mailto:jor@soe.ucsc.edu?cc=ekaltman@soe.ucsc.edu" target="_top">Contact</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="/gamenet/faq">FAQ</a>
+    </div>
   </center>
   <!-- Google Analytics Snippet -->
   <script>
