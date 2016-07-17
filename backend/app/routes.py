@@ -2,7 +2,7 @@ import csv
 import os
 import gensim
 from datetime import datetime
-from flask import Flask, render_template, jsonify, request, redirect, g
+from flask import Flask, render_template, jsonify, request, redirect, g, send_from_directory
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_wtf import Form
@@ -13,7 +13,7 @@ from game import GameNetGame, GameSageGame, GameIdea
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'gamenet.db')
 # These get set below
 app.gamenet_ontology_database = None
@@ -31,6 +31,9 @@ db = SQLAlchemy(app)
 lm = LoginManager()
 lm.init_app(app)
 
+@app.route('/robots.txt')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
 
 @lm.user_loader
 def load_user(user_id):
